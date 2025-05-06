@@ -36,6 +36,7 @@ import {
   refreshOutline
 } from 'ionicons/icons';
 import {SegmentValue} from '@ionic/angular';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-tab-artists',
@@ -45,7 +46,7 @@ import {SegmentValue} from '@ionic/angular';
     IonText, IonSegment, IonSegmentButton, IonProgressBar,
     IonSkeletonText, IonAccordionGroup, IonAccordion, IonItem,
     IonIcon, IonBadge, IonList, IonAvatar, IonNote,
-    IonCard, IonCardContent, IonButtons, IonButton, DatePipe, IonLabel
+    IonCard, IonCardContent, IonButtons, IonButton, DatePipe, IonLabel, RouterLink
   ],
   styleUrls: ['./tab-artists.page.scss']
 })
