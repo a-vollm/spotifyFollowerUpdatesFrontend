@@ -139,6 +139,39 @@ export class TabArtistsPage implements OnDestroy {
     }
   }
 
+  async requestPushPermission() {
+    // Berechtigung für Benachrichtigungen anfordern
+    const permission = await Notification.requestPermission();
+
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      this.triggerPushNotification()
+      // Service Worker registrieren
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered: ', registration);
+          })
+          .catch((err) => {
+            console.error('Service Worker registration failed: ', err);
+          });
+      }
+    } else {
+      console.log('Notification permission denied.');
+    }
+  }
+
+  triggerPushNotification() {
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.ready.then(function (registration) {
+        registration.showNotification('Hallo', {
+          body: 'Dies ist eine Testbenachrichtigung.',
+          icon: '/assets/icons/icon-192x192.png',
+          badge: '/assets/icons/badge.png'
+        });
+      });
+    }
+  }
   private async loadYear(year: string) {
     const data = await this.spotify.getReleasesForYear(year);
     this.releases.set(data);

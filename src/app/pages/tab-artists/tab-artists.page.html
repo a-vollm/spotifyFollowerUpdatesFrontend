@@ -5,6 +5,9 @@
       <ion-button (click)="loadAll()">
         <ion-icon slot="icon-only" name="refresh"></ion-icon>
       </ion-button>
+      <ion-button (click)="requestPushPermission()">
+        not
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-segment scrollable [value]="selectedYear()" (ionChange)="selectYear($event.detail.value)" color="primary">
