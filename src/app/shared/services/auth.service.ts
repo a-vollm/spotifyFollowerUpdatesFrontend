@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {lastValueFrom} from 'rxjs';
+import {environment} from '../../../environments/environment.prod';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -27,7 +28,9 @@ export class AuthService {
   }
 
   login(): void {
-    window.location.href = '/auth/spotify';
+    const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const authUrl = isLocalhost ? '/auth/spotify' : `${environment.apiUrl}/auth/spotify`;
+    window.location.href = authUrl;
   }
 
   async refreshToken(): Promise<string> {
@@ -36,7 +39,7 @@ export class AuthService {
 
     const params = new HttpParams().set('refresh_token', refreshToken);
     const result = await lastValueFrom(
-      this.http.get<{ access_token: string }>(`/refresh`, {params})
+      this.http.get<{ access_token: string }>(`${environment.apiUrl}/refresh`, {params})
     );
 
     const token = result.access_token;

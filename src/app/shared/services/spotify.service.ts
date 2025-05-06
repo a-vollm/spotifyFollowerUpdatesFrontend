@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {io, Socket} from 'socket.io-client';
 import {firstValueFrom, Observable} from 'rxjs';
+import {environment} from '../../../environments/environment.prod';
 
 export interface MonthGroup {
   month: string;
@@ -16,11 +17,11 @@ export interface CacheStatus {
 
 @Injectable({providedIn: 'root'})
 export class SpotifyService {
-  private api = ''; // Leer lassen für Proxy-Nutzung
+  private api = environment.apiUrl;
   socket: Socket;
 
   constructor(private http: HttpClient) {
-    this.socket = io('https://spotifyfollowerupdates.onrender.com', {
+    this.socket = io(environment.apiUrl, {
       transports: ['websocket'],
       withCredentials: true
     });
@@ -56,7 +57,7 @@ export class SpotifyService {
   async getCacheStatus(): Promise<CacheStatus> {
     try {
       return await firstValueFrom(
-        this.http.get<CacheStatus>('/cache-status', { // Relativer Pfad
+        this.http.get<CacheStatus>(`${this.api}/cache-status`, {
           headers: this.getAuthHeader()
         })
       ) || {loading: true, totalArtists: 0, doneArtists: 0};
@@ -69,7 +70,7 @@ export class SpotifyService {
   async getLatest20(): Promise<any[]> {
     try {
       return await firstValueFrom(
-        this.http.get<any[]>('/latest', { // Relativer Pfad
+        this.http.get<any[]>(`${this.api}/latest`, {
           headers: this.getAuthHeader()
         })
       ) || [];
@@ -82,7 +83,7 @@ export class SpotifyService {
   async getReleasesForYear(year: string): Promise<MonthGroup[]> {
     try {
       return await firstValueFrom(
-        this.http.get<MonthGroup[]>(`/releases/${year}`, { // Relativer Pfad
+        this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`, {
           headers: this.getAuthHeader()
         })
       ) || [];
@@ -93,11 +94,10 @@ export class SpotifyService {
   }
 
   getPlaylistData(playlistId: string): Observable<any> {
-    return this.http.get(`/playlist/${playlistId}`);
+    return this.http.get(`${this.api}/playlist/${playlistId}`);
   }
 
   mapUsernames(ids: string[]): Observable<Record<string, string>> {
-    return this.http.post<Record<string, string>>(`/map-usernames`, {ids});
+    return this.http.post<Record<string, string>>(`${this.api}/map-usernames`, {ids});
   }
-
 }
