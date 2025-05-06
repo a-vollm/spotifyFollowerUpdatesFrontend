@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://spotify-backend.onrender.com'
+  apiUrl: 'https://spotifyfollowerupdates.onrender.com'
 };
