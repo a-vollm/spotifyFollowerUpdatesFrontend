@@ -1,0 +1,39 @@
+{
+  "/auth": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/cache-status": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/releases": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/latest": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/playlist": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/map-usernames": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/socket.io": {
+    "target": "https://spotifyfollowerupdates.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "ws": true
+  }
+}

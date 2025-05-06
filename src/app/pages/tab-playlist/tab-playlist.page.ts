@@ -1,0 +1,174 @@
+import {Component, OnInit, signal} from '@angular/core';
+import {SpotifyService} from '../../shared/services/spotify.service';
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonBadge,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSpinner,
+  IonThumbnail,
+  IonTitle,
+  IonToolbar
+} from '@ionic/angular/standalone';
+import {DatePipe} from '@angular/common';
+
+export interface TrackItem {
+  added_by?: {
+    id?: string;
+    display_name?: string;
+  };
+
+  [key: string]: any;
+}
+
+interface PlaylistTrack {
+  added_at: string;
+  added_by?: {
+    id?: string;
+    display_name?: string;
+    [key: string]: any;
+  };
+  track: {
+    id: string;
+    name: string;
+    artists: { name: string }[];
+    album: {
+      images: { url: string }[];
+    };
+  };
+
+  [key: string]: any;
+}
+
+@Component({
+  selector: 'app-tab-playlist',
+  templateUrl: './tab-playlist.page.html',
+  styleUrls: ['./tab-playlist.page.scss'],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonSpinner,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonThumbnail,
+    DatePipe,
+    IonBadge,
+    IonAccordionGroup,
+    IonAccordion
+  ]
+})
+export class TabPlaylistPage implements OnInit {
+  playlistData = signal<any>(null);
+  loading = signal<boolean>(true);
+  playlistGroupedByMonth = signal<{ month: string; tracks: PlaylistTrack[] }[]>([]);
+
+  constructor(private spotifyService: SpotifyService) {
+  }
+
+  ngOnInit() {
+    const playlistId = '4QTlILYEMucSKLHptGxjAq';
+
+    this.spotifyService.getPlaylistData(playlistId).subscribe(
+      (data) => {
+        const tracks = data.tracks.items as {
+          added_by?: { id?: string; display_name?: string; [key: string]: any };
+          [key: string]: any;
+        }[];
+
+        const ids = tracks
+          .map(t => t.added_by?.id)
+          .filter((id): id is string => !!id);
+
+        const uniqueIds = [...new Set(ids)];
+
+        if (uniqueIds.length === 0) {
+          this.playlistData.set(data);
+          this.loading.set(false);
+          return;
+        }
+
+        this.spotifyService.mapUsernames(uniqueIds).subscribe(
+          (mapping) => {
+            tracks.forEach(t => {
+              const id = t.added_by?.id;
+              if (id && mapping[id]) {
+                t.added_by = {
+                  ...t.added_by,
+                  display_name: mapping[id]
+                };
+              }
+            });
+
+            tracks.sort((a, b) => {
+              const dateA = new Date(a['added_at']).getTime();
+              const dateB = new Date(b['added_at']).getTime();
+              return dateB - dateA;
+            });
+
+            const grouped = new Map<string, PlaylistTrack[]>();
+
+            tracks.forEach((track) => {
+              const date = new Date(track['added_at']);
+              const key = date.toLocaleString('default', {month: 'long', year: 'numeric'});
+              if (!grouped.has(key)) grouped.set(key, []);
+              grouped.get(key)!.push(<PlaylistTrack>track);
+            });
+
+            const result = Array.from(grouped.entries()).map(([month, tracks]) => ({
+              month,
+              tracks,
+            }));
+
+            this.playlistGroupedByMonth.set(result);
+            this.playlistData.set(data);
+            this.loading.set(false);
+          },
+          (err) => {
+            console.error('Mapping failed', err);
+            this.playlistData.set(data);
+            this.loading.set(false);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error loading playlist data', error);
+        this.loading.set(false);
+      }
+    );
+  }
+
+  badgeColorMap = new Map<string, string>();
+
+  getBadgeColor(userName: string): string {
+    if (!this.badgeColorMap.has(userName)) {
+      const color = this.generateColorFromName(userName);
+      this.badgeColorMap.set(userName, color);
+    }
+    return this.badgeColorMap.get(userName)!;
+  }
+
+  generateColorFromName(name: string): string {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = hash % 337;
+    return `hsl(${hue}, 65%, 50%)`;
+  }
+
+}

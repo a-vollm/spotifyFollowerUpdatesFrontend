@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Playlist Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (loading()) {
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading playlist...</p>
+  } @else {
+    @if (playlistData()) {
+      <ion-card>
+        <ion-card-header>
+          <img [src]="playlistData().images[0]?.url" class="playlist-header-image">
+          <ion-card-title>{{ playlistData().name }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-accordion-group>
+            @for (group of playlistGroupedByMonth(); track group.month) {
+              <ion-accordion>
+                <ion-item slot="header" color="light">
+                  <ion-label>{{ group.month }}</ion-label>
+                </ion-item>
+                <div slot="content">
+                  <ion-list>
+                    @for (track of group.tracks; track track.track.id) {
+                      <ion-item>
+                        <ion-thumbnail slot="start">
+                          <img [src]="track.track.album.images[0]?.url">
+                        </ion-thumbnail>
+                        <ion-label>
+                          <h2>{{ track.track.name }}</h2>
+                          <p>{{ track.track.artists[0].name }}</p>
+                          <p class="meta-line">
+                            <ion-badge style="font-size: 0.6rem"
+                                       [style.background-color]="getBadgeColor(track.added_by?.display_name || '')">
+                              {{ track.added_by?.display_name }}
+                            </ion-badge>
+                            &nbsp;{{ track.added_at | date:'dd.MM.yyyy - HH:mm' }}
+                          </p>
+                        </ion-label>
+                      </ion-item>
+                    }
+                  </ion-list>
+                </div>
+              </ion-accordion>
+            }
+          </ion-accordion-group>
+
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+</ion-content>

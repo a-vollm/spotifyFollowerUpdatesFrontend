@@ -1,0 +1,77 @@
+.playlist-header-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 5px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease-out;
+}
+
+.playlist-header-image:hover {
+  transform: scale(1.05);
+}
+
+ion-card-header {
+  position: relative;
+  overflow: hidden;
+}
+
+ion-card-title {
+  position: absolute;
+  bottom: 30px;
+  left: 25px;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+  animation: fadeInUp 1s ease-out;
+}
+
+ion-card-subtitle {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ion-card-header {
+  background-color: transparent;
+  position: relative;
+}
+
+.playlist-header-image::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+}
+
+ion-badge {
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+/*# sourceMappingURL=tab-playlist.page.css.map */
