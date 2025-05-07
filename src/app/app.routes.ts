@@ -8,11 +8,11 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'tab-artists',
+    redirectTo: 'releases',
     pathMatch: 'full',
   },
   {
-    path: 'tab-artists',
+    path: 'releases',
     loadComponent: () => import('./pages/tab-artists/tab-artists.page').then(m => m.TabArtistsPage)
   },
   {
@@ -21,4 +21,8 @@ export const routes: Routes = [
   },
 
   {path: 'callback', component: CallbackPage},
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage)
+  },
 ];

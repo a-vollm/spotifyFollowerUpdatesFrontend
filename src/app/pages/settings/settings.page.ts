@@ -1,30 +1,21 @@
-// src/app/app.component.ts
-import {Component, OnInit} from '@angular/core';
-import {IonApp, IonRouterOutlet, Platform} from '@ionic/angular/standalone';
-import {AuthService} from './shared/services/auth.service';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {IonContent, IonHeader, IonSegmentButton, IonTitle, IonToolbar, Platform} from '@ionic/angular/standalone';
+import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.scss'],
+  standalone: true,
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonSegmentButton]
 })
-export class AppComponent implements OnInit {
+export class SettingsPage {
+
   constructor(
-    private authService: AuthService,
     private platform: Platform
   ) {
-
-    this.platform.ready().then(() => {
-      this.requestPushPermission()
-
-    });
-  }
-
-  ngOnInit() {
-      const path = window.location.pathname;
-      if (path !== '/callback' && !this.authService.isAuthenticated()) {
-        this.authService.login();
-      }
   }
 
   async requestPushPermission() {
