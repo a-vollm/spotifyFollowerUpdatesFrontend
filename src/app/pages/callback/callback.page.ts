@@ -20,7 +20,7 @@ export class CallbackPage implements OnInit {
   async ngOnInit() {
     await this.auth.handleCallbackWeb();
     if (this.auth.isAuthenticated()) {
-      this.router.navigateByUrl('/tab-artists');
+      this.router.navigateByUrl('/');
     }
   }
 }
