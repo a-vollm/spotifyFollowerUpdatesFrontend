@@ -36,3 +36,14 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+:root {
+  --app-height: 100dvh;
+}
+
+html, body, ion-app, ion-content {
+  height: var(--app-height);
+}
+
+ion-content {
+  height: 100dvh !important;
+}
