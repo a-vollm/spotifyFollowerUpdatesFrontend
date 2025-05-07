@@ -14,17 +14,23 @@ export class AppComponent implements OnInit {
     private platform: Platform
   ) {
 
-    this.platform.ready().then(() => {
-      this.requestPushPermission()
 
-    });
+
+
   }
 
   ngOnInit() {
+    this.platform.ready().then(() => {
       const path = window.location.pathname;
       if (path !== '/callback' && !this.authService.isAuthenticated()) {
         this.authService.login();
       }
+    });
+
+    this.platform.ready().then(() => {
+      this.requestPushPermission()
+
+    });
   }
 
   async requestPushPermission() {

@@ -71,7 +71,7 @@ export class AuthService {
     localStorage.setItem('spotify_expires_at', expiresAt.toString());
 
     if (this.isAuthenticated()) {
-      this.router.navigateByUrl('/tabs/artists');
+      this.router.navigateByUrl('releases');
     } else {
       this.login();
     }
