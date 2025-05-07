@@ -6,6 +6,11 @@
   --ion-color-primary-rgb: 29, 185, 84;
   --ion-background-color: #121212;
   --ion-text-color: #ffffff;
+  --app-height: 90dvh;
+}
+
+html, body, ion-app, ion-content {
+  height: var(--app-height) !important;
 }
 
 .album-card {
@@ -29,6 +34,7 @@
 
 ion-content {
   --padding-bottom: 56px;
+  height: 100dvh !important;
 }
 
 
