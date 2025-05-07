@@ -149,7 +149,7 @@ export class TabArtistsPage implements OnDestroy {
     setTimeout(() => {
       this.isSwitchingView = false;
       const groups = this.monthData();
-      this.lastMonthOpen.set(groups[0].month);
+      this.lastMonthOpen.set(groups[0]?.month);
     }, 500);
   }
 

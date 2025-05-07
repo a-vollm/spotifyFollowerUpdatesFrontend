@@ -20,7 +20,8 @@ export class CallbackPage implements OnInit {
   async ngOnInit() {
     await this.auth.handleCallbackWeb();
     if (this.auth.isAuthenticated()) {
-      this.router.navigateByUrl('/');
+      console.log('AUTHENTICATED');
+      this.router.navigateByUrl('');
     }
   }
 }
