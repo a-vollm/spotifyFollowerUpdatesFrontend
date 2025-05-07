@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, computed, OnInit, signal} from '@angular/core';
 import {SpotifyService} from '../../shared/services/spotify.service';
 import {
   IonAccordion,
@@ -9,16 +9,16 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonContent,
-  IonHeader,
   IonItem,
   IonLabel,
   IonList,
+  IonProgressBar,
   IonSpinner,
-  IonThumbnail,
-  IonTitle,
-  IonToolbar
+  IonText,
+  IonThumbnail
 } from '@ionic/angular/standalone';
 import {DatePipe} from '@angular/common';
+import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
 
 export interface TrackItem {
   added_by?: {
@@ -53,9 +53,6 @@ interface PlaylistTrack {
   templateUrl: './tab-playlist.page.html',
   styleUrls: ['./tab-playlist.page.scss'],
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonSpinner,
     IonCard,
@@ -69,14 +66,22 @@ interface PlaylistTrack {
     DatePipe,
     IonBadge,
     IonAccordionGroup,
-    IonAccordion
+    IonAccordion,
+    FooterNavigationComponent,
+    IonProgressBar,
+    IonText
   ]
 })
 export class TabPlaylistPage implements OnInit {
   playlistData = signal<any>(null);
   loading = signal<boolean>(true);
   playlistGroupedByMonth = signal<{ month: string; tracks: PlaylistTrack[] }[]>([]);
-
+  loadedTracks = signal(0);
+  totalTracks = signal(0);
+  progressValue = computed(() => {
+    const total = this.totalTracks();
+    return total ? this.loadedTracks() / total : 0;
+  });
   constructor(private spotifyService: SpotifyService) {
   }
 

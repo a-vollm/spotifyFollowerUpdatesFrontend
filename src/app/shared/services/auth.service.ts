@@ -29,6 +29,7 @@ export class AuthService {
 
   login(): void {
     const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    console.log(isLocalhost);
     const authUrl = isLocalhost ? '/auth/spotify' : `${environment.apiUrl}/auth/spotify`;
     window.location.href = authUrl;
   }

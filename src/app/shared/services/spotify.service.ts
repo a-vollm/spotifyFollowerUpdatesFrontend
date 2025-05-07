@@ -17,11 +17,13 @@ export interface CacheStatus {
 
 @Injectable({providedIn: 'root'})
 export class SpotifyService {
-  private api = environment.apiUrl;
+  private isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+  private api = this.isLocalhost ? '' : environment.apiUrl;
   socket: Socket;
 
   constructor(private http: HttpClient) {
-    this.socket = io(environment.apiUrl, {
+    this.socket = io(this.api, {
       transports: ['websocket'],
       withCredentials: true
     });

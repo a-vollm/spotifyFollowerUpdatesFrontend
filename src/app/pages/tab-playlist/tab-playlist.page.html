@@ -1,13 +1,12 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Playlist Details</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
+<ion-content [fullscreen]="true">
   @if (loading()) {
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Loading playlist...</p>
+    <div class="loading-container">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <ion-text color="medium">
+        <p>Loading Playlist</p>
+      </ion-text>
+      <ion-progress-bar type="indeterminate" color="primary"></ion-progress-bar>
+    </div>
   } @else {
     @if (playlistData()) {
       <ion-card>
@@ -54,3 +53,4 @@
     }
   }
 </ion-content>
+<app-footer-navigation></app-footer-navigation>

@@ -1,19 +1,4 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Spotify Releases</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="loadAll()">
-        <ion-icon slot="icon-only" name="refresh"></ion-icon>
-      </ion-button>
-      <ion-button (click)="requestPushPermission()">
-        not
-      </ion-button>
-      <ion-button [routerLink]="['/tab-playlist']">
-        <ion-icon slot="icon-only" name="musical-notes"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-
   <ion-segment scrollable [value]="selectedYear()" (ionChange)="selectYear($event.detail.value)" color="primary">
     @for (y of years(); track $index) {
       <ion-segment-button [value]="y" class="year-segment">
@@ -23,7 +8,15 @@
         </ion-label>
       </ion-segment-button>
     }
+
+    <ion-segment-button>
+      <ion-icon slot="icon-only" name="refresh" (click)="loadAll()"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button>
+      <span (click)="requestPushPermission()">  not</span>
+    </ion-segment-button>
   </ion-segment>
+
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -125,3 +118,5 @@
     </ion-card>
   }
 </ion-content>
+<app-footer-navigation></app-footer-navigation>
+

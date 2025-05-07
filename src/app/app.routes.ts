@@ -3,12 +3,12 @@ import {CallbackPage} from './pages/callback/callback.page';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./pages/tab-playlist/tab-playlist.page').then((m) => m.TabPlaylistPage),
+    path: '',
+    loadComponent: () => import('./pages/tab-artists/tab-artists.page').then((m) => m.TabArtistsPage),
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'tab-artists',
     pathMatch: 'full',
   },
   {
@@ -21,5 +21,4 @@ export const routes: Routes = [
   },
 
   {path: 'callback', component: CallbackPage},
-
 ];

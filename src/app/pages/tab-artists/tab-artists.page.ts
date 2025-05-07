@@ -5,8 +5,6 @@ import {
   IonAccordionGroup,
   IonAvatar,
   IonBadge,
-  IonButton,
-  IonButtons,
   IonCard,
   IonCardContent,
   IonContent,
@@ -21,9 +19,7 @@ import {
   IonSegmentButton,
   IonSkeletonText,
   IonSpinner,
-  IonText,
-  IonTitle,
-  IonToolbar
+  IonText
 } from '@ionic/angular/standalone';
 import {DatePipe} from '@angular/common';
 import {addIcons} from 'ionicons';
@@ -36,17 +32,17 @@ import {
   refreshOutline
 } from 'ionicons/icons';
 import {SegmentValue} from '@ionic/angular';
-import {RouterLink} from '@angular/router';
+import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
 
 @Component({
   selector: 'app-tab-artists',
   templateUrl: './tab-artists.page.html',
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner,
+    IonHeader, IonContent, IonSpinner,
     IonText, IonSegment, IonSegmentButton, IonProgressBar,
     IonSkeletonText, IonAccordionGroup, IonAccordion, IonItem,
     IonIcon, IonBadge, IonList, IonAvatar, IonNote,
-    IonCard, IonCardContent, IonButtons, IonButton, DatePipe, IonLabel, RouterLink
+    IonCard, IonCardContent, DatePipe, IonLabel, FooterNavigationComponent
   ],
   styleUrls: ['./tab-artists.page.scss']
 })
