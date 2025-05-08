@@ -1,7 +1,13 @@
+.playlist-header-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
 .playlist-header-image {
-  width: 30%;
-  height: auto;
-  max-width: 100px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 5px;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
@@ -12,14 +18,13 @@
   transform: scale(1.05);
 }
 
-ion-card-header {
-  position: relative;
-  overflow: hidden;
+.playlist-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 ion-card-title {
-  position: absolute;
-  left: 35%;
   color: white;
   font-size: 1.2rem;
   font-weight: bold;
@@ -28,9 +33,6 @@ ion-card-title {
 }
 
 ion-card-subtitle {
-  position: absolute;
-  top: 30%;
-  left: 35%;
   color: #ffc815;
   font-size: 0.8rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
@@ -39,6 +41,7 @@ ion-card-subtitle {
     color: white;
   }
 }
+
 
 @keyframes fadeInUp {
   0% {
@@ -49,31 +52,4 @@ ion-card-subtitle {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-ion-card-header {
-  background-color: transparent;
-  position: relative;
-}
-
-.playlist-header-image::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.meta-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-}
-
-ion-badge {
-  line-height: 1;
-  padding: 2px 6px;
 }
