@@ -18,37 +18,34 @@ export class SettingsPage {
   ) {
   }
 
-  async requestPushPermission() {
-
+  protected async initPush() {
     const permission = await Notification.requestPermission();
 
-    if (permission === 'granted') {
-      console.log('Notification permission granted.');
-      this.triggerPushNotification()
-      // Service Worker registrieren
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then((registration) => {
-            console.log('Service Worker registered: ', registration);
-          })
-          .catch((err) => {
-            console.error('Service Worker registration failed: ', err);
-          });
-      }
-    } else {
-      console.log('Notification permission denied.');
+    if (permission !== 'granted') {
+      console.warn('Benachrichtigungen abgelehnt');
+      return;
     }
-  }
 
-  triggerPushNotification() {
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.ready.then(function (registration) {
-        registration.showNotification('Hallo', {
+    console.log('Benachrichtigungen erlaubt');
+
+    // Service Worker registrieren
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/service-worker.js');
+        console.log('Service Worker registriert:', registration);
+
+        // Notification direkt auslösen
+        registration.showNotification('Hallo 👋', {
           body: 'Dies ist eine Testbenachrichtigung.',
           icon: '/assets/icons/icon-192x192.png',
           badge: '/assets/icons/badge.png'
         });
-      });
+
+      } catch (error) {
+        console.error('Fehler beim Registrieren des Service Workers:', error);
+      }
+    } else {
+      console.warn('Service Worker wird nicht unterstützt');
     }
   }
 }
