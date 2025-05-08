@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
     // Service Worker registrieren
     if ('serviceWorker' in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register('/service-worker.js');
+        const registration = await navigator.serviceWorker.register('ngsw-worker.js');
         console.log('Service Worker registriert:', registration);
 
         // Notification direkt auslösen
