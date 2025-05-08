@@ -39,8 +39,11 @@ export class SpotifyService {
       console.log('Cache aktualisiert - neue Daten werden geladen');
       this.getLatest20().then(data => {
         console.log('Neue Daten empfangen:', data);
-        this.initPush()
       });
+    });
+
+    this.socket.on('socketTest', () => {
+      this.initPush();
     });
 
     this.socket.on('connect_error', (err) => {
