@@ -55,6 +55,11 @@ ion-content {
 
 
 ion-header {
+  background: #181818;
+
+  > ion-card {
+    background: #181818;
+  }
   > ion-toolbar {
     padding-top: 1rem !important;
   }
