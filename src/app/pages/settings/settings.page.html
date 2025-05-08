@@ -1,12 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title size="large">settings</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">settings</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-segment-button>
-    <span (click)="initPush()">  Allow notifications</span>
+  <ion-segment-button (click)="initPush()">
+    Allow notification
   </ion-segment-button>
 </ion-content>
 <app-footer-navigation></app-footer-navigation>

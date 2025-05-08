@@ -19,8 +19,9 @@ export class SettingsPage {
   }
 
   protected async initPush() {
+    console.warn('TRIGGER')
     const permission = await Notification.requestPermission();
-
+    console.log(permission)
     if (permission !== 'granted') {
       console.warn('Benachrichtigungen abgelehnt');
       return;
