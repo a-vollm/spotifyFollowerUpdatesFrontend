@@ -1,25 +1,26 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {IonContent, IonHeader, IonSegmentButton, IonTitle, IonToolbar, Platform} from '@ionic/angular/standalone';
+import {IonButton, IonContent, IonHeader, IonTitle, IonToolbar, Platform} from '@ionic/angular/standalone';
 import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
+import {SwUpdate} from '@angular/service-worker';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonSegmentButton]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonButton]
 })
 export class SettingsPage {
 
   constructor(
-    private platform: Platform
+    private platform: Platform,
+    private swUpdate: SwUpdate
   ) {
   }
 
   protected async initPush() {
-    console.warn('TRIGGER')
     const permission = await Notification.requestPermission();
     console.log(permission)
     if (permission !== 'granted') {
@@ -47,6 +48,20 @@ export class SettingsPage {
       }
     } else {
       console.warn('Service Worker wird nicht unterstützt');
+    }
+  }
+
+  checkForUpdate() {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.checkForUpdate().then(hasUpdate => {
+        if (hasUpdate) {
+          this.swUpdate.activateUpdate().then(() => {
+            document.location.reload();
+          });
+        } else {
+          console.log('Kein Update verfügbar');
+        }
+      });
     }
   }
 }

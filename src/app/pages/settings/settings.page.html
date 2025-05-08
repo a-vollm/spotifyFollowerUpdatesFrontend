@@ -4,8 +4,12 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <ion-segment-button (click)="initPush()">
+  <ion-button (click)="initPush()">
     Allow notification
-  </ion-segment-button>
+  </ion-button>
+
+  <ion-button (click)="checkForUpdate()">
+    Check for update
+  </ion-button>
 </ion-content>
 <app-footer-navigation></app-footer-navigation>
