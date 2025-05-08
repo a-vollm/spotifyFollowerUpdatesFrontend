@@ -52,33 +52,28 @@ export class SpotifyService {
     });
   }
 
-  private async initPush() {
+  async initPush() {
     const permission = await Notification.requestPermission();
+    if (permission !== 'granted') return;
 
-    if (permission !== 'granted') {
-      console.warn('Benachrichtigungen abgelehnt');
-      return;
-    }
+    const registration = await navigator.serviceWorker.ready;
 
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('ngsw-worker.js');
-        console.log('Service Worker registriert:', registration);
+    const sub = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: this.urlBase64ToUint8Array('BPMdL97IPz7Ip88PI_0QpGXetjU2WgsT9NgwuAOWEBX6Avesjz3GNVXozknYFHrWVW4GeonB3_CwlLFOVMArOr8')
+    });
 
-        // Notification direkt auslösen
-        registration.showNotification('Hallo 👋', {
-          body: 'Neue Daten empfangen',
-          icon: '/assets/icons/icon-192x192.png',
-          badge: '/assets/icons/badge.png'
-        });
-
-      } catch (error) {
-        console.error('Fehler beim Registrieren des Service Workers:', error);
-      }
-    } else {
-      console.warn('Service Worker wird nicht unterstützt');
-    }
+    await this.http.post('/subscribe', sub).toPromise();
+    console.log('🔔 PushSubscription registriert:', sub);
   }
+
+  private urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+  }
+
 
   onCacheUpdated(cb: () => void) {
     this.socket.on('cacheUpdated', cb);

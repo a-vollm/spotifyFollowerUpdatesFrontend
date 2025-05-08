@@ -30,13 +30,11 @@ export class SettingsPage {
 
     console.log('Benachrichtigungen erlaubt');
 
-    // Service Worker registrieren
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.register('ngsw-worker.js');
         console.log('Service Worker registriert:', registration);
 
-        // Notification direkt auslösen
         registration.showNotification('Hallo 👋', {
           body: 'Dies ist eine Testbenachrichtigung.',
           icon: '/assets/icons/icon-192x192.png',
