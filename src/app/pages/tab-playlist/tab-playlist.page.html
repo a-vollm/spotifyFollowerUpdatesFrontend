@@ -1,3 +1,15 @@
+<ion-header>
+  @if (playlistData()) {
+    <ion-card>
+      <ion-card-header>
+        <img [src]="playlistData().images[0]?.url" class="playlist-header-image">
+        <ion-card-title>{{ playlistData().name }}</ion-card-title>
+        <ion-card-subtitle>Total tracks <span>({{ playlistData().tracks.total }})</span></ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+  }
+</ion-header>
+
 <ion-content [fullscreen]="true">
   @if (loading()) {
     <div class="loading-container">
@@ -10,11 +22,6 @@
   } @else {
     @if (playlistData()) {
       <ion-card>
-        <ion-card-header>
-          <img [src]="playlistData().images[0]?.url" class="playlist-header-image">
-          <ion-card-title>{{ playlistData().name }}</ion-card-title>
-        </ion-card-header>
-
         <ion-card-content>
           <ion-accordion-group>
             @for (group of playlistGroupedByMonth(); track group.month) {

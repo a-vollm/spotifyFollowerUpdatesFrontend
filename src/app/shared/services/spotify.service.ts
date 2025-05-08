@@ -77,6 +77,7 @@ export class SpotifyService {
         })
       ) || [];
     } catch (error) {
+      localStorage.removeItem('spotify_token');
       console.error('Fehler beim Abrufen der neuesten Releases:', error);
       throw error;
     }
@@ -90,16 +91,30 @@ export class SpotifyService {
         })
       ) || [];
     } catch (error) {
+      localStorage.removeItem('spotify_token');
       console.error(`Fehler beim Abrufen der Releases für ${year}:`, error);
       throw error;
     }
   }
 
   getPlaylistData(playlistId: string): Observable<any> {
-    return this.http.get(`${this.api}/playlist/${playlistId}`);
+    try {
+      return this.http.get(`${this.api}/playlist/${playlistId}`);
+    } catch (error) {
+      localStorage.removeItem('spotify_token');
+      console.error(`Fehler beim Abrufen der Playlist für ${playlistId}:`, error);
+      throw error;
+    }
+
   }
 
   mapUsernames(ids: string[]): Observable<Record<string, string>> {
-    return this.http.post<Record<string, string>>(`${this.api}/map-usernames`, {ids});
+    try {
+      return this.http.post<Record<string, string>>(`${this.api}/map-usernames`, {ids});
+    } catch (error) {
+      localStorage.removeItem('spotify_token');
+      console.error(`Fehler beim Abrufen der mapped Usernames:`, error);
+      throw error;
+    }
   }
 }
