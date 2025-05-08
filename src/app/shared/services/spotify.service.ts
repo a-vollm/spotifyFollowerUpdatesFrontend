@@ -44,7 +44,6 @@ export class SpotifyService {
 
     this.socket.on('socketTest', () => {
       console.log('socket test');
-      this.initPush();
     });
 
     this.socket.on('connect_error', (err) => {

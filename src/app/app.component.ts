@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {IonApp, IonRouterOutlet, Platform} from '@ionic/angular/standalone';
 import {AuthService} from './shared/services/auth.service';
+import {SpotifyService} from './shared/services/spotify.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private spotifyService: SpotifyService,
     private platform: Platform
   ) {
   }
@@ -23,35 +25,8 @@ export class AppComponent implements OnInit {
         this.authService.login();
       }
 
-      this.initPush();
+      this.spotifyService.initPush();
     });
   }
 
-  private async initPush() {
-    const permission = await Notification.requestPermission();
-
-    if (permission !== 'granted') {
-      console.warn('Benachrichtigungen abgelehnt');
-      return;
-    }
-
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('ngsw-worker.js');
-        console.log('Service Worker registriert:', registration);
-
-        // Notification direkt auslösen
-        registration.showNotification('Hallo 👋', {
-          body: 'Dies ist eine Testbenachrichtigung.',
-          icon: '/assets/icons/icon-192x192.png',
-          badge: '/assets/icons/badge.png'
-        });
-
-      } catch (error) {
-        console.error('Fehler beim Registrieren des Service Workers:', error);
-      }
-    } else {
-      console.warn('Service Worker wird nicht unterstützt');
-    }
-  }
 }
