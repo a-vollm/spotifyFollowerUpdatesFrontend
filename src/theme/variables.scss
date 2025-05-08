@@ -55,6 +55,7 @@ ion-content {
 
 
 ion-header {
-  padding-top: 2rem !important;
-  background: #181818;
+  > ion-toolbar {
+    padding-top: 1rem !important;
+  }
 }

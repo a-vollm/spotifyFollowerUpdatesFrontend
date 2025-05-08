@@ -3,6 +3,8 @@
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 1rem;
+  background: transparent;
+  box-shadow: unset;
 }
 
 .playlist-header-image {
@@ -10,7 +12,7 @@
   height: 80px;
   object-fit: cover;
   border-radius: 5px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.9);
   transition: transform 0.3s ease-out;
 }
 

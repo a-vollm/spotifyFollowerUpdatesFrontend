@@ -17,7 +17,8 @@ import {
   IonProgressBar,
   IonSpinner,
   IonText,
-  IonThumbnail
+  IonThumbnail,
+  IonToolbar
 } from '@ionic/angular/standalone';
 import {DatePipe} from '@angular/common';
 import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
@@ -73,7 +74,8 @@ interface PlaylistTrack {
     IonProgressBar,
     IonText,
     IonHeader,
-    IonCardSubtitle
+    IonCardSubtitle,
+    IonToolbar
   ]
 })
 export class TabPlaylistPage implements OnInit {

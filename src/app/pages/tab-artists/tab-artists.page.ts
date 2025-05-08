@@ -19,7 +19,8 @@ import {
   IonSegmentButton,
   IonSkeletonText,
   IonSpinner,
-  IonText
+  IonText,
+  IonToolbar
 } from '@ionic/angular/standalone';
 import {DatePipe} from '@angular/common';
 import {addIcons} from 'ionicons';
@@ -42,7 +43,7 @@ import {FooterNavigationComponent} from '../../shared/features/footer-navigation
     IonText, IonSegment, IonSegmentButton, IonProgressBar,
     IonSkeletonText, IonAccordionGroup, IonAccordion, IonItem,
     IonIcon, IonBadge, IonList, IonAvatar, IonNote,
-    IonCard, IonCardContent, DatePipe, IonLabel, FooterNavigationComponent
+    IonCard, IonCardContent, DatePipe, IonLabel, FooterNavigationComponent, IonToolbar
   ],
   styleUrls: ['./tab-artists.page.scss']
 })

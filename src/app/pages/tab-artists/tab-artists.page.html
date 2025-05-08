@@ -1,4 +1,5 @@
 <ion-header>
+  <ion-toolbar>
   <ion-segment scrollable [value]="selectedYear()" (ionChange)="selectYear($event.detail.value)" color="primary">
     @for (y of years(); track $index) {
       <ion-segment-button [value]="y" class="year-segment">
@@ -9,7 +10,7 @@
       </ion-segment-button>
     }
   </ion-segment>
-
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
