@@ -57,9 +57,10 @@ ion-content {
 ion-header {
   background: #181818 !important;
 
-  > ion-card {
-    background: #181818 !important;
+  ion-card {
+    box-shadow: unset !important;
   }
+
   > ion-toolbar {
     background: #181818 !important;
 
