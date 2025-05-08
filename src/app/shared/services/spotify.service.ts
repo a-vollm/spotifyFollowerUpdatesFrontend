@@ -43,6 +43,7 @@ export class SpotifyService {
     });
 
     this.socket.on('socketTest', () => {
+      console.log('socket test');
       this.initPush();
     });
 
