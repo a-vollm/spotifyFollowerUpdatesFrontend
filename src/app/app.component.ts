@@ -35,9 +35,6 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    console.log('Benachrichtigungen erlaubt');
-
-    // Service Worker registrieren
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.register('ngsw-worker.js');

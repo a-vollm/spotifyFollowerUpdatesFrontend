@@ -39,12 +39,41 @@ export class SpotifyService {
       console.log('Cache aktualisiert - neue Daten werden geladen');
       this.getLatest20().then(data => {
         console.log('Neue Daten empfangen:', data);
+        this.initPush()
       });
     });
 
     this.socket.on('connect_error', (err) => {
       console.error('Socket-Verbindungsfehler:', err);
     });
+  }
+
+  private async initPush() {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      console.warn('Benachrichtigungen abgelehnt');
+      return;
+    }
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('ngsw-worker.js');
+        console.log('Service Worker registriert:', registration);
+
+        // Notification direkt auslösen
+        registration.showNotification('Hallo 👋', {
+          body: 'Neue Daten empfangen',
+          icon: '/assets/icons/icon-192x192.png',
+          badge: '/assets/icons/badge.png'
+        });
+
+      } catch (error) {
+        console.error('Fehler beim Registrieren des Service Workers:', error);
+      }
+    } else {
+      console.warn('Service Worker wird nicht unterstützt');
+    }
   }
 
   onCacheUpdated(cb: () => void) {
