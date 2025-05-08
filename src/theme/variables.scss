@@ -55,12 +55,13 @@ ion-content {
 
 
 ion-header {
-  background: #181818;
+  background: #181818 !important;
 
   > ion-card {
-    background: #181818;
+    background: #181818 !important;
   }
   > ion-toolbar {
-    padding-top: 3rem !important;
+    background: #181818 !important;
+
   }
 }
