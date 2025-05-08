@@ -4,7 +4,7 @@
       <ion-card-header>
         <img [src]="playlistData().images[0]?.url" class="playlist-header-image">
         <ion-card-title>{{ playlistData().name }}</ion-card-title>
-        <ion-card-subtitle>Total tracks <span>({{ playlistData().tracks.total }})</span></ion-card-subtitle>
+        <ion-card-subtitle>Tracks <span>({{ playlistData().tracks.length }})</span></ion-card-subtitle>
       </ion-card-header>
     </ion-card>
   }

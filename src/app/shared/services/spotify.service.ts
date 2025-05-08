@@ -101,20 +101,9 @@ export class SpotifyService {
     try {
       return this.http.get(`${this.api}/playlist/${playlistId}`);
     } catch (error) {
-      localStorage.removeItem('spotify_token');
       console.error(`Fehler beim Abrufen der Playlist für ${playlistId}:`, error);
       throw error;
     }
 
-  }
-
-  mapUsernames(ids: string[]): Observable<Record<string, string>> {
-    try {
-      return this.http.post<Record<string, string>>(`${this.api}/map-usernames`, {ids});
-    } catch (error) {
-      localStorage.removeItem('spotify_token');
-      console.error(`Fehler beim Abrufen der mapped Usernames:`, error);
-      throw error;
-    }
   }
 }

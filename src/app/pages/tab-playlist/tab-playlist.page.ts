@@ -80,79 +80,53 @@ export class TabPlaylistPage implements OnInit {
   playlistData = signal<any>(null);
   loading = signal<boolean>(true);
   playlistGroupedByMonth = signal<{ month: string; tracks: PlaylistTrack[] }[]>([]);
-  loadedTracks = signal(0);
-  totalTracks = signal(0);
+
   constructor(private spotifyService: SpotifyService) {
+    console.log('ngOnInit');
   }
 
   ngOnInit() {
-    const playlistId = '4QTlILYEMucSKLHptGxjAq';
+    this.getPlaylistData();
+  }
 
+  getPlaylistData() {
+    const playlistId = '4QTlILYEMucSKLHptGxjAq';
     this.spotifyService.getPlaylistData(playlistId).subscribe(
       (data) => {
         console.log(data);
-        const tracks = data.tracks.items as {
+        const tracks = data.tracks as {
           added_by?: { id?: string; display_name?: string; [key: string]: any };
           [key: string]: any;
         }[];
 
-        const ids = tracks
-          .map(t => t.added_by?.id)
-          .filter((id): id is string => !!id);
+        tracks.sort((a, b) => {
+          const dateA = new Date(a['added_at']).getTime();
+          const dateB = new Date(b['added_at']).getTime();
+          return dateB - dateA;
+        });
 
-        const uniqueIds = [...new Set(ids)];
+        const grouped = new Map<string, PlaylistTrack[]>();
 
-        if (uniqueIds.length === 0) {
-          this.playlistData.set(data);
-          this.loading.set(false);
-          return;
-        }
+        tracks.forEach((track) => {
+          const date = new Date(track['added_at']);
+          const key = date.toLocaleString('default', {month: 'long', year: 'numeric'});
+          if (!grouped.has(key)) grouped.set(key, []);
+          grouped.get(key)!.push(<PlaylistTrack>track);
+        });
 
-        this.spotifyService.mapUsernames(uniqueIds).subscribe(
-          (mapping) => {
-            tracks.forEach(t => {
-              const id = t.added_by?.id;
-              if (id && mapping[id]) {
-                t.added_by = {
-                  ...t.added_by,
-                  display_name: mapping[id]
-                };
-              }
-            });
+        const result = Array.from(grouped.entries()).map(([month, tracks]) => ({
+          month,
+          tracks,
+        }));
 
-            tracks.sort((a, b) => {
-              const dateA = new Date(a['added_at']).getTime();
-              const dateB = new Date(b['added_at']).getTime();
-              return dateB - dateA;
-            });
-
-            const grouped = new Map<string, PlaylistTrack[]>();
-
-            tracks.forEach((track) => {
-              const date = new Date(track['added_at']);
-              const key = date.toLocaleString('default', {month: 'long', year: 'numeric'});
-              if (!grouped.has(key)) grouped.set(key, []);
-              grouped.get(key)!.push(<PlaylistTrack>track);
-            });
-
-            const result = Array.from(grouped.entries()).map(([month, tracks]) => ({
-              month,
-              tracks,
-            }));
-
-            this.playlistGroupedByMonth.set(result);
-            this.playlistData.set(data);
-            console.log(data)
-            this.loading.set(false);
-          },
-          (err) => {
-            console.error('Mapping failed', err);
-            this.playlistData.set(data);
-            this.loading.set(false);
-          }
-        );
+        this.playlistGroupedByMonth.set(result);
+        this.playlistData.set(data);
+        console.log(data);
+        this.loading.set(false);
       },
       (error) => {
+        localStorage.removeItem('spotify_token');
+        window.location.reload();
         console.error('Error loading playlist data', error);
         this.loading.set(false);
       }
