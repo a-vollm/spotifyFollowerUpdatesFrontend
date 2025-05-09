@@ -78,29 +78,19 @@ export class SpotifyService {
     this.socket.on('cacheUpdated', cb);
   }
 
-  private getAuthHeader() {
-    const token = localStorage.getItem('spotify_token') || '';
-    return {Authorization: `Bearer ${token}`};
-  }
-
   async getCacheStatus(): Promise<CacheStatus> {
-    try {
-      return await firstValueFrom(
-        this.http.get<CacheStatus>(`${this.api}/cache-status`, {
-          headers: this.getAuthHeader()
-        })
-      ) || {loading: true, totalArtists: 0, doneArtists: 0};
-    } catch (error) {
-      console.error('Fehler beim Abrufen des Cache-Status:', error);
-      throw error;
-    }
+    return firstValueFrom(
+      this.http.get<CacheStatus>(`${this.api}/cache-status`, {
+        withCredentials: true
+      })
+    );
   }
 
   async getLatest20(): Promise<any[]> {
     try {
       return await firstValueFrom(
         this.http.get<any[]>(`${this.api}/latest`, {
-          headers: this.getAuthHeader()
+          withCredentials: true
         })
       ) || [];
     } catch (error) {
@@ -114,7 +104,7 @@ export class SpotifyService {
     try {
       return await firstValueFrom(
         this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`, {
-          headers: this.getAuthHeader()
+          withCredentials: true
         })
       ) || [];
     } catch (error) {
@@ -126,7 +116,9 @@ export class SpotifyService {
 
   getPlaylistData(playlistId: string): Observable<any> {
     try {
-      return this.http.get(`${this.api}/playlist/${playlistId}`);
+      return this.http.get(`${this.api}/playlist/${playlistId}`, {
+        withCredentials: true
+      });
     } catch (error) {
       console.error(`Fehler beim Abrufen der Playlist für ${playlistId}:`, error);
       throw error;
