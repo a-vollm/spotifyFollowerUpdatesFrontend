@@ -21,17 +21,18 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.platform.ready();
-    console.log(this.router.url.startsWith('/callback'))
-    // 1)  Wenn wir GERADE auf /callback sind, NICHT noch einmal umleiten!
-    if (this.router.url.startsWith('/callback')) return;
+    await this.platform.ready().then(() => {
+      setTimeout(() => {
+        if (this.router.url.startsWith('/callback')) return;
 
-    // 2)  Gewohnte Logik
-    if (this.authService.isLoggedIn()) {
-      await this.authService.refresh();
-    } else {
-      this.authService.login();
-    }
+        // 2)  Gewohnte Logik
+        if (this.authService.isLoggedIn()) {
+          this.authService.refresh();
+        } else {
+          this.authService.login();
+        }
+      }, 300)
+    });
   }
 
 }
