@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
         console.log('User is NOT logged in');
         this.authService.login();
       }
-    }, 300)
+    }, 3000)
 
   }
 }
