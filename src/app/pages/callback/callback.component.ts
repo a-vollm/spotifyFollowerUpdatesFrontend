@@ -22,7 +22,7 @@ export class CallbackComponent implements OnInit {
 
       if (accessToken && refreshToken) {
         this.auth.setToken(accessToken, refreshToken, Number(expiresIn));
-        this.router.navigate(['/'], {replaceUrl: true});
+        //this.router.navigate(['/'], {replaceUrl: true});
       }
     });
   }
