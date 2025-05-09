@@ -25,9 +25,11 @@ export class AuthService {
     }>(`${environment.apiUrl}/auth/token`, {code})
       .subscribe({
         next: (res) => {
-          // ✅ Tokens SPEICHERN
           this.setToken(res.access_token, res.refresh_token, res.expires_in);
-          this.router.navigate(['/'], {replaceUrl: true}); // URL säubern
+          // 🔄 Navigiere erst NACH dem Speichern
+          setTimeout(() => {
+            this.router.navigate(['/'], {replaceUrl: true});
+          }, 100); // Kurze Verzögerung
         },
         error: (err) => {
           console.error('Token exchange failed:', err);
@@ -71,8 +73,8 @@ export class AuthService {
         refresh_token: this.refreshToken
       }).toPromise();
 
-      this.accessToken = res.access_token;
-      this.expiresAt = Date.now() + res.expires_in * 1000;
+      // 🔄 Speichere den neuen Access-Token im Session Storage
+      this.setToken(res.access_token, this.refreshToken, res.expires_in); // refreshToken bleibt gleich
     } catch {
       this.logout();
     } finally {
