@@ -21,13 +21,15 @@ export class AppComponent implements OnInit {
 // app.component.ts (korrigiert)
   async ngOnInit() {
     await this.platform.ready();
+    setTimeout(async () => {
+      if (this.authService.isLoggedIn()) {
+        console.log('User is logged in');
+        await this.authService.refresh();
+      } else {
+        console.log('User is NOT logged in');
+        this.authService.login();
+      }
+    }, 300)
 
-    if (this.authService.isLoggedIn()) {
-      console.log('User is logged in');
-      await this.authService.refresh();
-    } else {
-      console.log('User is NOT logged in');
-      this.authService.login();
-    }
   }
 }

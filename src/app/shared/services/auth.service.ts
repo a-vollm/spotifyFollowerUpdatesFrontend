@@ -10,6 +10,7 @@ export class AuthService {
   private expiresAt: number = 0;
   private refreshInProgress = false;
   constructor(private http: HttpClient, private router: Router) {
+    this.loadFromStorage();
   }
 
   login(): void {
