@@ -1,4 +1,3 @@
-import {CallbackPage} from './pages/callback/callback.page';
 import {Routes} from '@angular/router';
 
 export const routes: Routes = [
@@ -14,10 +13,6 @@ export const routes: Routes = [
   {
     path: 'tab-playlist',
     loadComponent: () => import('./pages/tab-playlist/tab-playlist.page').then(m => m.TabPlaylistPage)
-  },
-  {
-    path: 'callback',
-    component: CallbackPage
   },
   {
     path: 'settings',

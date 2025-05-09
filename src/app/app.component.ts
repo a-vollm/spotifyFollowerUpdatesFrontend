@@ -20,13 +20,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.platform.ready().then(() => {
-      const path = window.location.pathname;
-      if (path !== '/callback' && !this.authService.isAuthenticated()) {
-        this.authService.login();
-      }
+      this.authService.isAuthenticated().subscribe({
+        next: (authenticated) => {
+          if (!authenticated) {
+            this.authService.login();
+          }
+        },
+        error: () => this.authService.login()
+      });
 
       this.spotifyService.initPush();
     });
   }
-
 }
