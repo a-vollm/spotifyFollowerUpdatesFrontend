@@ -19,13 +19,12 @@ export class AppComponent implements OnInit {
   }
 
 // app.component.ts
-  ngOnInit() {
-    this.platform.ready().then(async () => {
-      if (this.authService.isLoggedIn()) {
-        await this.authService.refresh();
-      } else {
-        this.authService.login();
-      }
-    });
+  async ngOnInit() {
+
+    if (this.authService.isLoggedIn()) {
+      await this.authService.refresh();
+    } else {
+      this.authService.login();
+    }
   }
 }
