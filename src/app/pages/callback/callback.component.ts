@@ -16,23 +16,18 @@ export class CallbackComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const accessToken = params['access_token'];
-      const refreshToken = params['refresh_token'];
-      const expiresIn = params['expires_in'];
+      const code = params['code']; // 🔑 Spotify gibt einen CODE zurück, keine Tokens!
+      const error = params['error'];
 
-      if (accessToken && refreshToken) {
-        this.auth.setToken(accessToken, refreshToken, Number(expiresIn));
-        // ⚠️ redirect nach Startseite OHNE Tokens in der URL
-        this.router.navigate(['/'], {replaceUrl: true});
-      } else if (params['error']) {
-        // z.B. Spotify Login fehlgeschlagen
-        console.error('Spotify Auth Error:', params['error']);
+      if (code) {
+        // Code an AuthService übergeben → Tokens werden abgerufen
+        this.auth.exchangeCode(code);
+      } else if (error) {
+        console.error('Auth error:', error);
         this.auth.logout();
       } else {
-        // keine Tokens vorhanden → redirect zur Loginseite
-        this.auth.login();
+        this.router.navigate(['/']);
       }
     });
   }
-
 }
