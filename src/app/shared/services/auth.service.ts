@@ -26,6 +26,7 @@ export class AuthService {
     }>(`${environment.apiUrl}/auth/token`, {code})
       .subscribe({
         next: (res) => {
+          console.log('Token exchange successful:', res);
           this.setToken(res.access_token, res.refresh_token, res.expires_in);
           // 🔄 Navigiere erst NACH dem Speichern
           setTimeout(() => {

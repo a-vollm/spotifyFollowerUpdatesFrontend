@@ -18,7 +18,8 @@ export class CallbackComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const code = params['code']; // 🔑 Spotify gibt einen CODE zurück, keine Tokens!
       const error = params['error'];
-
+      console.log(code);
+      console.log(error);
       if (code) {
         // Code an AuthService übergeben → Tokens werden abgerufen
         this.auth.exchangeCode(code);
