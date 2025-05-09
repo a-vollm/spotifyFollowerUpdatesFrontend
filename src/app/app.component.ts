@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {IonApp, IonRouterOutlet, Platform} from '@ionic/angular/standalone';
 import {AuthService} from './shared/services/auth.service';
 import {SpotifyService} from './shared/services/spotify.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,19 +15,23 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private spotifyService: SpotifyService,
+    private readonly router: Router,
     private platform: Platform
   ) {
   }
 
-// app.component.ts (korrigiert)
   async ngOnInit() {
     await this.platform.ready();
+    console.log(this.router.url.startsWith('/callback'))
+    // 1)  Wenn wir GERADE auf /callback sind, NICHT noch einmal umleiten!
+    if (this.router.url.startsWith('/callback')) return;
+
+    // 2)  Gewohnte Logik
     if (this.authService.isLoggedIn()) {
-      console.log('User is logged in');
       await this.authService.refresh();
     } else {
-      console.log('User is NOT logged in');
       this.authService.login();
     }
   }
+
 }
