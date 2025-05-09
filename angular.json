@@ -43,6 +43,11 @@
                 "glob": "push-worker.js",
                 "input": "src/",
                 "output": "/"
+              },
+              {
+                "glob": "static.json",
+                "input": "src/",
+                "output": "/"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
