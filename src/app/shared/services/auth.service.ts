@@ -31,7 +31,7 @@ export class AuthService {
           // 🔄 Navigiere erst NACH dem Speichern
           setTimeout(() => {
             this.router.navigate(['/'], {replaceUrl: true});
-          }, 1000);
+          }, 300);
         },
         error: (err) => {
           console.error('Token exchange failed:', err);
