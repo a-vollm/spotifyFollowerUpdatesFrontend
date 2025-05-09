@@ -1,7 +1,7 @@
 // main.ts
 import {bootstrapApplication} from '@angular/platform-browser';
-import {PreloadAllModules, provideRouter, RouteReuseStrategy, withPreloading} from '@angular/router';
-import {IonicRouteStrategy, provideIonicAngular} from '@ionic/angular/standalone';
+import {PreloadAllModules, provideRouter, withHashLocation, withPreloading} from '@angular/router';
+import {provideIonicAngular} from '@ionic/angular/standalone';
 import {HTTP_INTERCEPTORS, provideHttpClient} from '@angular/common/http';
 import {isDevMode} from '@angular/core';
 import {provideServiceWorker} from '@angular/service-worker';
@@ -12,9 +12,12 @@ import {AuthInterceptor} from './app/shared/services/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-    provideIonicAngular({mode: 'md'}),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideRouter(
+      routes,
+      withPreloading(PreloadAllModules),
+      withHashLocation()
+    ),
+    provideIonicAngular(),
     provideHttpClient(),
     {
       provide: HTTP_INTERCEPTORS,
@@ -25,7 +28,7 @@ bootstrapApplication(AppComponent, {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     })
-  ],
+  ]
 });
 
 function setAppHeight() {
