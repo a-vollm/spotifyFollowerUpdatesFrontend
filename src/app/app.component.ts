@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
         } else {
           this.authService.login();
         }
-      }, 300)
+      }, 3000)
     });
   }
 
