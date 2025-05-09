@@ -127,8 +127,6 @@ export class TabPlaylistPage implements OnInit {
         this.loading.set(false);
       },
       (error) => {
-        localStorage.removeItem('spotify_token');
-        window.location.reload();
         console.error('Error loading playlist data', error);
         this.loading.set(false);
       }
