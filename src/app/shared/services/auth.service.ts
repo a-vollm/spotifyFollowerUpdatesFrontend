@@ -31,32 +31,41 @@ export class AuthService {
       });
   }
 
-  // Token erneuern, wenn abgelaufen
-  refresh(): void {
-    if (!this.refreshToken) return;
-    this.http.post<{ access_token: string, expires_in: number }>(
-      `${environment.apiUrl}/auth/refresh`, {refresh_token: this.refreshToken}
-    ).subscribe(res => {
-      this.accessToken = res.access_token;
-      this.expiresAt = Date.now() + res.expires_in * 1000;
-    });
-  }
-
-  setToken(accessToken: string, refreshToken: string) {
+  setToken(accessToken: string, refreshToken: string, expiresIn: number) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    this.expiresAt = Date.now() + 3600 * 1000; // ggf. über param
+    this.expiresAt = Date.now() + expiresIn * 1000;
+  }
+
+  async refresh(): Promise<void> {  // 👈 async machen
+    if (!this.refreshToken) return;
+
+    try {
+      const res = await this.http.post<{
+        access_token: string,
+        expires_in: number
+      }>(`${environment.apiUrl}/auth/refresh`, {
+        refresh_token: this.refreshToken
+      }).toPromise();
+
+      this.accessToken = res.access_token;
+      this.expiresAt = Date.now() + res.expires_in * 1000;
+    } catch (error) {
+      this.logout();
+    }
   }
 
   getToken(): string | null {
     if (!this.accessToken) return null;
-    if (Date.now() >= this.expiresAt) {
-      this.refresh();
-      return null;
+
+    // Puffer von 60 Sekunden für Token-Refresh
+    if (Date.now() >= this.expiresAt - 60000) {
+      this.refresh(); // 👈 Async-Aufruf ohne await
+      return this.accessToken; // 👈 Gib aktuellen Token temporär zurück
     }
+
     return this.accessToken;
   }
-
   logout(): void {
     this.accessToken = this.refreshToken = null;
     this.router.navigate(['/']);

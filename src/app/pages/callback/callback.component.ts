@@ -18,13 +18,14 @@ export class CallbackComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const accessToken = params['access_token'];
       const refreshToken = params['refresh_token'];
+      const expiresIn = params['expires_in'];
 
       if (accessToken && refreshToken) {
-        this.auth.setToken(accessToken, refreshToken);
+        this.auth.setToken(accessToken, refreshToken, Number(expiresIn));
         // ⚠️ redirect nach Startseite OHNE Tokens in der URL
-        this.router.navigate(['/'], {replaceUrl: true});
+        this.router.navigate(['/'], {replaceUrl: true, queryParamsHandling: 'preserve'});
       } else if (params['error']) {
-        // z. B. Spotify Login fehlgeschlagen
+        // z.B. Spotify Login fehlgeschlagen
         console.error('Spotify Auth Error:', params['error']);
         this.auth.logout();
       } else {
