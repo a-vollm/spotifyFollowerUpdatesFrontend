@@ -42,6 +42,12 @@ export class AuthService {
     });
   }
 
+  setToken(accessToken: string, refreshToken: string) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.expiresAt = Date.now() + 3600 * 1000; // ggf. über param
+  }
+
   getToken(): string | null {
     if (!this.accessToken) return null;
     if (Date.now() >= this.expiresAt) {

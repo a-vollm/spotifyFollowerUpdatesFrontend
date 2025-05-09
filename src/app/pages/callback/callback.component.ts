@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../shared/services/auth.service';
 
 @Component({
@@ -9,16 +9,24 @@ import {AuthService} from '../../shared/services/auth.service';
 export class CallbackComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private auth: AuthService
   ) {
   }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const code = params['code'];
-      if (code) {
-        this.auth.exchangeCode(code);
+      const accessToken = params['access_token'];
+      const refreshToken = params['refresh_token'];
+
+      if (accessToken && refreshToken) {
+        this.auth.setToken(accessToken, refreshToken);
+        this.router.navigate(['/']);
+      } else {
+        // redirect to login or show error
+        this.auth.login();
       }
     });
   }
+
 }
