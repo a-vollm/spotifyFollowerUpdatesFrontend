@@ -8,7 +8,7 @@ export class AuthService {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
   private expiresAt: number = 0;
-
+  private refreshInProgress = false;
   constructor(private http: HttpClient, private router: Router) {
   }
 
@@ -37,9 +37,10 @@ export class AuthService {
     this.expiresAt = Date.now() + expiresIn * 1000;
   }
 
-  async refresh(): Promise<void> {  // 👈 async machen
-    if (!this.refreshToken) return;
+  async refresh(): Promise<void> {
+    if (!this.refreshToken || this.refreshInProgress) return;
 
+    this.refreshInProgress = true;
     try {
       const res = await this.http.post<{
         access_token: string,
@@ -50,8 +51,10 @@ export class AuthService {
 
       this.accessToken = res.access_token;
       this.expiresAt = Date.now() + res.expires_in * 1000;
-    } catch (error) {
+    } catch {
       this.logout();
+    } finally {
+      this.refreshInProgress = false;
     }
   }
 
