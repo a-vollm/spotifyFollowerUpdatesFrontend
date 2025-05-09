@@ -28,7 +28,7 @@ export class CallbackComponent implements OnInit {
         console.error('Auth error:', error);
         this.auth.logout();
       } else {
-        this.router.navigate(['/']);
+        //this.router.navigate(['/']);
       }
     });
   }

@@ -24,10 +24,10 @@ export class AppComponent implements OnInit {
     setTimeout(async () => {
       if (this.authService.isLoggedIn()) {
         console.log('User is logged in');
-        await this.authService.refresh();
+        //  await this.authService.refresh();
       } else {
         console.log('User is NOT logged in');
-        this.authService.login();
+        //  this.authService.login();
       }
     }, 3000)
 
