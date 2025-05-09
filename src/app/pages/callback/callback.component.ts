@@ -23,7 +23,7 @@ export class CallbackComponent implements OnInit {
       if (accessToken && refreshToken) {
         this.auth.setToken(accessToken, refreshToken, Number(expiresIn));
         // ⚠️ redirect nach Startseite OHNE Tokens in der URL
-        this.router.navigate(['/'], {replaceUrl: true, queryParamsHandling: 'preserve'});
+        //  this.router.navigate(['/'], {replaceUrl: true, queryParamsHandling: 'preserve'});
       } else if (params['error']) {
         // z.B. Spotify Login fehlgeschlagen
         console.error('Spotify Auth Error:', params['error']);
