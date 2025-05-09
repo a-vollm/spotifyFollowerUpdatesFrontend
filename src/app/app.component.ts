@@ -19,17 +19,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.platform.ready().then(() => {
-      this.authService.isAuthenticated().subscribe({
-        next: (authenticated) => {
-          if (!authenticated) {
-            this.authService.login();
-          }
-        },
-        error: () => this.authService.login()
-      });
-
-      this.spotifyService.initPush();
+    this.platform.ready().then(async () => {
+      if (!this.authService.isLoggedIn()) {
+        this.authService.login();
+        return;
+      } else {
+        this.authService.refresh(); // ← optional, bei Start erneuern falls nötig
+      }
     });
   }
+
 }

@@ -1,29 +1,62 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, map, Observable, of} from 'rxjs';
+import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment.prod';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  constructor(private http: HttpClient) {
+  private accessToken: string | null = null;
+  private refreshToken: string | null = null;
+  private expiresAt: number = 0;
+
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   login(): void {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  logout(): void {
-    this.http.post(`${environment.apiUrl}/logout`, {}, {withCredentials: true})
-      .subscribe(() => window.location.href = '/');
+  // Wird im Callback-Component aufgerufen
+  exchangeCode(code: string) {
+    return this.http.post<{
+      access_token: string,
+      refresh_token: string,
+      expires_in: number
+    }>(`${environment.apiUrl}/auth/token`, {code})
+      .subscribe(res => {
+        this.accessToken = res.access_token;
+        this.refreshToken = res.refresh_token;
+        this.expiresAt = Date.now() + res.expires_in * 1000;
+        this.router.navigate(['/']);
+      });
   }
 
-  isAuthenticated(): Observable<boolean> {
-    return this.http.get<boolean>(`${environment.apiUrl}/check-auth`, {
-      withCredentials: true,
-      observe: 'response'
-    }).pipe(
-      map(response => response.status === 200),
-      catchError(() => of(false))
-    );
+  // Token erneuern, wenn abgelaufen
+  refresh(): void {
+    if (!this.refreshToken) return;
+    this.http.post<{ access_token: string, expires_in: number }>(
+      `${environment.apiUrl}/auth/refresh`, {refresh_token: this.refreshToken}
+    ).subscribe(res => {
+      this.accessToken = res.access_token;
+      this.expiresAt = Date.now() + res.expires_in * 1000;
+    });
+  }
+
+  getToken(): string | null {
+    if (!this.accessToken) return null;
+    if (Date.now() >= this.expiresAt) {
+      this.refresh();
+      return null;
+    }
+    return this.accessToken;
+  }
+
+  logout(): void {
+    this.accessToken = this.refreshToken = null;
+    this.router.navigate(['/']);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
   }
 }

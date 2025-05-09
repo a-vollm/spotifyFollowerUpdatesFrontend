@@ -1,5 +1,5 @@
 import {Component, computed, effect, OnDestroy, signal} from '@angular/core';
-import {CacheStatus, MonthGroup, SpotifyService} from '../../shared/services/spotify.service';
+import {SpotifyService} from '../../shared/services/spotify.service';
 import {
   IonAccordion,
   IonAccordionGroup,
@@ -54,10 +54,10 @@ export class TabArtistsPage implements OnDestroy {
   selectedYear = signal(this.years()[0]);
   releaseType = signal<'all' | 'album' | 'single'>('all');
 
-  releases = signal<MonthGroup[]>([]);
+  releases = signal<any[]>([]);
   loading = signal(true);
   isSwitchingView = false;
-  progress = signal<CacheStatus>({loading: true, totalArtists: 0, doneArtists: 0});
+  progress = signal<any>({loading: true, totalArtists: 0, doneArtists: 0});
   lastMonthOpen = signal('');
   monthData = computed(() =>
     this.releases().map(group => {
@@ -110,8 +110,8 @@ export class TabArtistsPage implements OnDestroy {
 
     this.loadAll();
     const handler = () => this.loadAll();
-    this.spotify.onCacheUpdated(handler);
-    this.unsubscribe = () => this.spotify.socket.off('cacheUpdated', handler);
+    // this.spotify.onCacheUpdated(handler);
+    // this.unsubscribe = () => this.spotify.socket.off('cacheUpdated', handler);
 
     effect(() => {
       if (!this.progress().loading) {
@@ -138,9 +138,9 @@ export class TabArtistsPage implements OnDestroy {
   }
 
   private async loadYear(year: string) {
-    const data = await this.spotify.getReleasesForYear(year);
-    this.releases.set(data);
-    data.length ? this.lastMonthOpen.set(data[0].month) : undefined;
+    const data = await this.spotify.getReleases(year);
+    // this.releases.set(data);
+    // data.length ? this.lastMonthOpen.set(data[0].month) : undefined;
   }
 
   selectYear(value: string | number) {
@@ -160,7 +160,7 @@ export class TabArtistsPage implements OnDestroy {
     setTimeout(() => this.isSwitchingView = false);
   }
 
-  openRelease(r: MonthGroup['releases'][0]) {
+  openRelease(r) {
     r.external_urls?.spotify ? window.open(r.external_urls.spotify, '_blank') : undefined;
   }
 }
