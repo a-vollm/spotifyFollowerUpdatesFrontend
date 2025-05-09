@@ -16,21 +16,6 @@ export class AuthService {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  // Wird im Callback-Component aufgerufen
-  exchangeCode(code: string) {
-    return this.http.post<{
-      access_token: string,
-      refresh_token: string,
-      expires_in: number
-    }>(`${environment.apiUrl}/auth/token`, {code})
-      .subscribe(res => {
-        this.accessToken = res.access_token;
-        this.refreshToken = res.refresh_token;
-        this.expiresAt = Date.now() + res.expires_in * 1000;
-        this.router.navigate(['/']);
-      });
-  }
-
   setToken(accessToken: string, refreshToken: string, expiresIn: number): void {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
