@@ -17,11 +17,8 @@ bootstrapApplication(AppComponent, {
       withHashLocation()
     ),
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-
-    // 👉  Interceptor per withInterceptors() registrieren
     provideHttpClient(withInterceptorsFromDi()),
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-
     provideIonicAngular({mode: 'md'}),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

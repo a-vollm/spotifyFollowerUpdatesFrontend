@@ -126,16 +126,29 @@ export class TabArtistsPage implements OnDestroy {
 
   async loadAll() {
     this.loading.set(true);
+
     try {
-      const status = await this.spotify.getCacheStatus();
-      this.progress.set(status);
+      // wiederholt /cache-status abfragen,
+      // bis loading=false oder ein Fehler auftritt
+      await this.waitForCacheReady();
       await this.loadYear(this.selectedYear());
     } catch (e) {
       console.error(e);
     } finally {
-      this.loading.set(false);
+      this.loading.set(false);   // jetzt erst!
     }
   }
+
+  /* ------------ Hilfs-Funktion ------------ */
+  private async waitForCacheReady() {
+    while (true) {
+      const status = await this.spotify.getCacheStatus();
+      this.progress.set(status);           // Fortschritt aktualisieren
+      if (!status.loading) return;         // fertig → raus
+      await new Promise(r => setTimeout(r, 1500)); // 1,5 s warten, dann neu holen
+    }
+  }
+
 
   private async loadYear(year: string) {
     const data = await this.spotify.getReleasesForYear(year);
