@@ -9,6 +9,7 @@ export class AuthService {
   private refreshToken: string | null = null;
   private expiresAt: number = 0;
   private refreshInProgress = false;
+
   constructor(private http: HttpClient, private router: Router) {
     this.loadFromStorage();
   }
@@ -17,11 +18,19 @@ export class AuthService {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  setToken(access: string, exp: number) {
+  setToken(access: string, refresh: string, exp: number, uid: string) {
+    sessionStorage.setItem('access_token', access);
+    sessionStorage.setItem('refresh_token', refresh);
+    sessionStorage.setItem('expires', exp.toString());
+    sessionStorage.setItem('uid', uid);
+  }
+
+  updateAccessToken(access: string, exp: number) {
     sessionStorage.setItem('access_token', access);
     sessionStorage.setItem('expires', exp.toString());
   }
 
+  /* Getter */
   getToken() {
     return sessionStorage.getItem('access_token');
   }

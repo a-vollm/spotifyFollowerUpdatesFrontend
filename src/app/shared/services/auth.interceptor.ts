@@ -19,21 +19,27 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError(err => {
         if (err.status === 401 && this.auth.getRefreshToken()) {
+          /* ➊ Refresh-Call */
           return from(
             fetch('/auth/refresh', {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({uid})
-            }).then(res => res.json())
+            }).then(r => r.json())
           ).pipe(
+            /* ➋ Nur Access-Token speichern */
             switchMap(data => {
-              this.auth.setToken(data.access, data.expires_in);
-              return next.handle(req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${data.access}`,
-                  'X-User-Id': uid || ''
-                }
-              }));
+              this.auth.updateAccessToken(data.access, data.expires_in);
+
+              /* ➌ Gescheiterten Request mit neuem Token wiederholen */
+              return next.handle(
+                req.clone({
+                  setHeaders: {
+                    Authorization: `Bearer ${data.access}`,
+                    'X-User-Id': uid || ''
+                  }
+                })
+              );
             })
           );
         }
@@ -42,4 +48,5 @@ export class TokenInterceptor implements HttpInterceptor {
       })
     );
   }
+
 }
