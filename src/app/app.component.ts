@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.platform.ready().then(async () => {
-      this.spotifyService.initPush();
+      await this.spotifyService.initPush();
 
     });
   }
