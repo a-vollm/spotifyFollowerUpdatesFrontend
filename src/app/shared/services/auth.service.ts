@@ -18,16 +18,17 @@ export class AuthService {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  setToken(access: string, refresh: string, exp: number, uid: string) {
+  setToken(access: string, refresh: string, expSec: number, uid: string) {
     sessionStorage.setItem('access_token', access);
     sessionStorage.setItem('refresh_token', refresh);
-    sessionStorage.setItem('expires_at', exp.toString());
+
+    sessionStorage.setItem('expires_at', (Date.now() + expSec * 1000).toString());
     sessionStorage.setItem('uid', uid);
   }
 
-  updateAccessToken(access: string, exp: number) {
+  updateAccessToken(access: string, expSec: number) {
     sessionStorage.setItem('access_token', access);
-    sessionStorage.setItem('expires_at', exp.toString());
+    sessionStorage.setItem('expires_at', (Date.now() + expSec * 1000).toString());
   }
 
   /* Getter */

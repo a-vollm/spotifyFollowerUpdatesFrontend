@@ -1,17 +1,23 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {CanActivate} from '@angular/router';
 import {AuthService} from './auth.service';
+import {environment} from '../../../environments/environment.prod';
 
 @Injectable({providedIn: 'root'})
 export class AuthGuard implements CanActivate {
   constructor(private auth: AuthService) {
   }
 
-  canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-    if (this.auth.isLoggedIn()) return true;
+  canActivate(): boolean {
+    const access = sessionStorage.getItem('access_token');
+    const expires = Number(sessionStorage.getItem('expires_at') || 0);
 
-    sessionStorage.setItem('redirectAfterLogin', state.url);
-    this.auth.login();
+    if (access && Date.now() < expires - 30_000) {
+      return true;
+    }
+
+    window.location.href = `${environment.apiUrl}/auth/spotify`;
     return false;
   }
+
 }
