@@ -53,9 +53,6 @@ export class SpotifyService {
   }
 
   async initPush() {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') return;
-
     const registration = await navigator.serviceWorker.ready;
 
     const sub = await registration.pushManager.subscribe({
