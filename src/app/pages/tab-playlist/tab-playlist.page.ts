@@ -93,7 +93,7 @@ export class TabPlaylistPage implements OnInit {
 
   getPlaylistData() {
     const playlistId = '4QTlILYEMucSKLHptGxjAq';
-    this.spotifyService.getPlaylist(playlistId).subscribe(
+    this.spotifyService.getPlaylistData(playlistId).subscribe(
       (data) => {
         console.log(data);
         const tracks = data['tracks'] as {
