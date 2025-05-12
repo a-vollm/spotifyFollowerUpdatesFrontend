@@ -1,45 +1,108 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
+import {Router} from '@angular/router';
+import {environment} from '../../../environments/environment.prod';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  private readonly k = 'sp';
-  private loggedIn$ = new BehaviorSubject<boolean>(this.hasValidToken());
+  private accessToken: string | null = null;
+  private refreshToken: string | null = null;
+  private expiresAt: number = 0;
+  private refreshInProgress = false;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
+    this.loadFromStorage();
   }
 
-  isLoggedIn() {
-    return this.loggedIn$.value;
+  login(): void {
+    window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  login() {
-    window.location.href = '/auth/spotify';
+  // Wird im Callback-Component aufgerufen
+  exchangeCode(code: string) {
+    return this.http.post<{
+      access_token: string,
+      refresh_token: string,
+      expires_in: number
+    }>(`${environment.apiUrl}/auth/token`, {code})
+      .subscribe({
+        next: (res) => {
+          console.log('Token exchange successful:', res);
+          this.setToken(res.access_token, res.refresh_token, res.expires_in);
+          // 🔄 Navigiere erst NACH dem Speichern
+          setTimeout(() => {
+            this.router.navigate(['/'], {replaceUrl: true});
+          }, 300);
+        },
+        error: (err) => {
+          console.error('Token exchange failed:', err);
+          this.logout();
+        }
+      });
   }
 
-  logout() {
-    sessionStorage.removeItem(this.k);
-    this.loggedIn$.next(false);
+  setToken(accessToken: string, refreshToken: string, expiresIn: number): void {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.expiresAt = Date.now() + expiresIn * 1000;
+
+    sessionStorage.setItem('access_token', accessToken);
+    sessionStorage.setItem('refresh_token', refreshToken);
+    sessionStorage.setItem('expires_at', this.expiresAt.toString());
   }
 
-  setToken(a: string, r: string, e: number) {
-    const t = Date.now() + e * 1000;
-    sessionStorage.setItem(this.k, JSON.stringify({a, r, t}));
-    this.loggedIn$.next(true);
+  private loadFromStorage(): void {
+    const access = sessionStorage.getItem('access_token');
+    const refresh = sessionStorage.getItem('refresh_token');
+    const expires = sessionStorage.getItem('expires_at');
+
+    if (access && refresh && expires) {
+      this.accessToken = access;
+      this.refreshToken = refresh;
+      this.expiresAt = parseInt(expires);
+    }
   }
 
-  getAccessToken(): string | null {
-    const v = sessionStorage.getItem(this.k);
-    if (!v) return null;
-    const {a, t} = JSON.parse(v);
-    return Date.now() < t ? a : null;
+  async refresh(): Promise<void> {
+    if (!this.refreshToken || this.refreshInProgress) return;
+
+    this.refreshInProgress = true;
+    try {
+      const res = await this.http.post<{
+        access_token: string,
+        expires_in: number
+      }>(`${environment.apiUrl}/auth/refresh`, {
+        refresh_token: this.refreshToken
+      }).toPromise();
+
+      // 🔄 Speichere den neuen Access-Token im Session Storage
+      this.setToken(res.access_token, this.refreshToken, res.expires_in); // refreshToken bleibt gleich
+    } catch {
+      this.logout();
+    } finally {
+      this.refreshInProgress = false;
+    }
   }
 
-  private hasValidToken(): boolean {
-    const v = sessionStorage.getItem(this.k);
-    if (!v) return false;
-    const {t} = JSON.parse(v);
-    return Date.now() < t;
+  getToken(): string | null {
+    this.loadFromStorage();
+    if (!this.accessToken) return null;
+
+    if (Date.now() >= this.expiresAt - 60000) {
+      this.refresh();
+      return this.accessToken;
+    }
+
+    return this.accessToken;
+  }
+
+  isLoggedIn(): boolean {
+    this.loadFromStorage();
+    return !!this.accessToken && Date.now() < this.expiresAt;
+  }
+
+  logout(): void {
+    this.accessToken = this.refreshToken = null;
+    this.router.navigate(['/']);
   }
 }

@@ -8,7 +8,7 @@ import {provideServiceWorker} from '@angular/service-worker';
 
 import {AppComponent} from './app/app.component';
 import {routes} from './app/app.routes';
-import {AuthInterceptor} from './app/shared/services/auth.interceptor';
+import {TokenInterceptor} from './app/shared/services/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -22,7 +22,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(),
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
+      useClass: TokenInterceptor,
       multi: true
     },
     provideServiceWorker('ngsw-worker.js', {
