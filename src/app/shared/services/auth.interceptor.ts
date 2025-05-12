@@ -27,12 +27,7 @@ export class TokenInterceptor implements HttpInterceptor {
             }).then(res => res.json())
           ).pipe(
             switchMap(data => {
-              this.auth.setToken(
-                data.access,
-                this.auth.getRefreshToken()!,
-                data.expires_in,
-                uid!
-              );
+              this.auth.setToken(data.access, data.expires_in);
               return next.handle(req.clone({
                 setHeaders: {
                   Authorization: `Bearer ${data.access}`,

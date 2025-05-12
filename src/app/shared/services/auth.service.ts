@@ -17,11 +17,9 @@ export class AuthService {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  setToken(access: string, refresh: string, exp: number, uid: string) {
+  setToken(access: string, exp: number) {
     sessionStorage.setItem('access_token', access);
-    sessionStorage.setItem('refresh_token', refresh);
     sessionStorage.setItem('expires', exp.toString());
-    sessionStorage.setItem('uid', uid);
   }
 
   getToken() {
