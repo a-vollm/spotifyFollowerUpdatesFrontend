@@ -18,14 +18,16 @@ export class CallbackComponent implements OnInit {
     this.route.queryParams.subscribe(p => {
       const access = p['access'];
       const refresh = p['refresh'];
-      const exp = +p['exp'];   // Sekunden
+      const exp = +p['exp'];
+      const uid = p['uid'];
 
-      if (access && refresh && exp) {
-        this.auth.setToken(access, refresh, exp);
+      if (access && refresh && exp && uid) {
+        this.auth.setToken(access, refresh, exp, uid);
         this.router.navigate(['/'], {replaceUrl: true});
       } else {
         this.router.navigate(['/']);
       }
     });
   }
+
 }

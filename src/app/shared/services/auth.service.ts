@@ -17,14 +17,23 @@ export class AuthService {
     window.location.href = `${environment.apiUrl}/auth/spotify`;
   }
 
-  setToken(accessToken: string, refreshToken: string, expiresIn: number): void {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-    this.expiresAt = Date.now() + expiresIn * 1000;
+  setToken(access: string, refresh: string, exp: number, uid: string) {
+    sessionStorage.setItem('access_token', access);
+    sessionStorage.setItem('refresh_token', refresh);
+    sessionStorage.setItem('expires', exp.toString());
+    sessionStorage.setItem('uid', uid);
+  }
 
-    sessionStorage.setItem('access_token', accessToken);
-    sessionStorage.setItem('refresh_token', refreshToken);
-    sessionStorage.setItem('expires_at', this.expiresAt.toString());
+  getToken() {
+    return sessionStorage.getItem('access_token');
+  }
+
+  getRefreshToken() {
+    return sessionStorage.getItem('refresh_token');
+  }
+
+  getUid() {
+    return sessionStorage.getItem('uid');
   }
 
   private loadFromStorage(): void {
@@ -37,39 +46,6 @@ export class AuthService {
       this.refreshToken = refresh;
       this.expiresAt = parseInt(expires);
     }
-  }
-
-  async refresh(): Promise<void> {
-    if (!this.refreshToken || this.refreshInProgress) return;
-
-    this.refreshInProgress = true;
-    try {
-      const res = await this.http.post<{
-        access_token: string,
-        expires_in: number
-      }>(`${environment.apiUrl}/auth/refresh`, {
-        refresh_token: this.refreshToken
-      }).toPromise();
-
-      // 🔄 Speichere den neuen Access-Token im Session Storage
-      this.setToken(res.access_token, this.refreshToken, res.expires_in); // refreshToken bleibt gleich
-    } catch {
-      this.logout();
-    } finally {
-      this.refreshInProgress = false;
-    }
-  }
-
-  getToken(): string | null {
-    this.loadFromStorage();
-    if (!this.accessToken) return null;
-
-    if (Date.now() >= this.expiresAt - 60000) {
-      this.refresh();
-      return this.accessToken;
-    }
-
-    return this.accessToken;
   }
 
   isLoggedIn(): boolean {
