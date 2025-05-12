@@ -61,9 +61,10 @@ export class TabArtistsPage implements OnDestroy {
   lastMonthOpen = signal('');
   monthData = computed(() =>
     this.releases().map(group => {
-      const filtered = group.releases.filter(r =>
-        this.releaseType() === 'all' || r.album_type === this.releaseType()
-      );
+      const filtered = group.releases
+        .filter(r => this.releaseType() === 'all' || r.album_type === this.releaseType())
+        .sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime());
+
       const albumCount = filtered.filter(r => r.album_type === 'album').length;
       const singleCount = filtered.filter(r => r.album_type === 'single').length;
       const coverUrl = filtered[0]?.images[0]?.url || '';
@@ -126,29 +127,16 @@ export class TabArtistsPage implements OnDestroy {
 
   async loadAll() {
     this.loading.set(true);
-
     try {
-      // wiederholt /cache-status abfragen,
-      // bis loading=false oder ein Fehler auftritt
-      await this.waitForCacheReady();
+      const status = await this.spotify.getCacheStatus();
+      this.progress.set(status);
       await this.loadYear(this.selectedYear());
     } catch (e) {
       console.error(e);
     } finally {
-      this.loading.set(false);   // jetzt erst!
+      this.loading.set(false);
     }
   }
-
-  /* ------------ Hilfs-Funktion ------------ */
-  private async waitForCacheReady() {
-    while (true) {
-      const status = await this.spotify.getCacheStatus();
-      this.progress.set(status);           // Fortschritt aktualisieren
-      if (!status.loading) return;         // fertig → raus
-      await new Promise(r => setTimeout(r, 1500)); // 1,5 s warten, dann neu holen
-    }
-  }
-
 
   private async loadYear(year: string) {
     const data = await this.spotify.getReleasesForYear(year);
