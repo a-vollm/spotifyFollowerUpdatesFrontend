@@ -18,14 +18,15 @@ export interface CacheStatus {
 @Injectable({providedIn: 'root'})
 export class SpotifyService {
   private isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-
   private api = this.isLocalhost ? '' : environment.apiUrl;
   socket: Socket;
 
   constructor(private http: HttpClient) {
     this.socket = io(this.api, {
       transports: ['websocket'],
-      withCredentials: true
+      auth: {
+        token: () => sessionStorage.getItem('access_token') ?? undefined
+      }
     });
     this.setupSocketEvents();
   }
@@ -62,7 +63,7 @@ export class SpotifyService {
       applicationServerKey: this.urlBase64ToUint8Array('BPMdL97IPz7Ip88PI_0QpGXetjU2WgsT9NgwuAOWEBX6Avesjz3GNVXozknYFHrWVW4GeonB3_CwlLFOVMArOr8')
     });
 
-    await this.http.post('/subscribe', sub).toPromise();
+    await this.http.post(`${this.api}/subscribe`, sub).toPromise();
     console.log('🔔 PushSubscription registriert:', sub);
   }
 
@@ -79,49 +80,29 @@ export class SpotifyService {
 
   async getCacheStatus(): Promise<CacheStatus> {
     return firstValueFrom(
-      this.http.get<CacheStatus>(`${this.api}/cache-status`, {
-        withCredentials: true
-      })
+      this.http.get<CacheStatus>(`${this.api}/cache-status`)
     );
   }
 
   async getLatest20(): Promise<any[]> {
     try {
-      return await firstValueFrom(
-        this.http.get<any[]>(`${this.api}/latest`, {
-          withCredentials: true
-        })
-      ) || [];
+      return await firstValueFrom(this.http.get<any[]>(`${this.api}/latest`)) ?? [];
     } catch (error) {
-      localStorage.removeItem('spotify_token');
-      console.error('Fehler beim Abrufen der neuesten Releases:', error);
+      sessionStorage.removeItem('access_token');
       throw error;
     }
   }
 
   async getReleasesForYear(year: string): Promise<MonthGroup[]> {
     try {
-      return await firstValueFrom(
-        this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`, {
-          withCredentials: true
-        })
-      ) || [];
+      return await firstValueFrom(this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`)) ?? [];
     } catch (error) {
-      localStorage.removeItem('spotify_token');
-      console.error(`Fehler beim Abrufen der Releases für ${year}:`, error);
+      sessionStorage.removeItem('access_token');
       throw error;
     }
   }
 
   getPlaylistData(playlistId: string): Observable<any> {
-    try {
-      return this.http.get(`${this.api}/playlist/${playlistId}`, {
-        withCredentials: true
-      });
-    } catch (error) {
-      console.error(`Fehler beim Abrufen der Playlist für ${playlistId}:`, error);
-      throw error;
-    }
-
+    return this.http.get(`${this.api}/playlist/${playlistId}`);
   }
 }
