@@ -21,13 +21,13 @@ export class AuthService {
   setToken(access: string, refresh: string, exp: number, uid: string) {
     sessionStorage.setItem('access_token', access);
     sessionStorage.setItem('refresh_token', refresh);
-    sessionStorage.setItem('expires', exp.toString());
+    sessionStorage.setItem('expires_at', exp.toString());
     sessionStorage.setItem('uid', uid);
   }
 
   updateAccessToken(access: string, exp: number) {
     sessionStorage.setItem('access_token', access);
-    sessionStorage.setItem('expires', exp.toString());
+    sessionStorage.setItem('expires_at', exp.toString());
   }
 
   /* Getter */
