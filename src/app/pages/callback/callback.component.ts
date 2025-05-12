@@ -16,20 +16,16 @@ export class CallbackComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const code = params['code']; // 🔑 Spotify gibt einen CODE zurück, keine Tokens!
-      const error = params['error'];
-      console.log(params);
-      console.log(code);
-      console.log(error);
-      if (code) {
-        // Code an AuthService übergeben → Tokens werden abgerufen
-        this.auth.exchangeCode(code);
-      } else if (error) {
-        console.error('Auth error:', error);
-        this.auth.logout();
-      } else {
-        this.router.navigate(['/']);
+      const access = params['access'];
+      const refresh = params['refresh'];
+      const exp = +params['exp'];
+
+      if (access && refresh && exp) {
+        this.auth.setToken(access, refresh, exp);
+        this.router.navigate(['/'], {replaceUrl: true});
+        return;
       }
+
     });
   }
 }
