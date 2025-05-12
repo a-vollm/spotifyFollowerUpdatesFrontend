@@ -4,7 +4,7 @@ import {AuthService} from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-callback',
-  template: `<p>Logging you in...</p>`
+  template: `<p>…</p>`
 })
 export class CallbackComponent implements OnInit {
   constructor(
@@ -15,21 +15,15 @@ export class CallbackComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      const code = params['code']; // 🔑 Spotify gibt einen CODE zurück, keine Tokens!
-      const error = params['error'];
-      console.log(params);
-      console.log(code);
-      console.log(error);
-      if (code) {
-        // Code an AuthService übergeben → Tokens werden abgerufen
-        this.auth.exchangeCode(code);
-      } else if (error) {
-        console.error('Auth error:', error);
-        this.auth.logout();
-      } else {
-        this.router.navigate(['/']);
-      }
-    });
+    const p = this.route.snapshot.queryParamMap;
+    const a = p.get('access');
+    const r = p.get('refresh');
+    const e = Number(p.get('exp'));
+    if (a && r && e) {
+      this.auth.setToken(a, r, e);
+      this.router.navigateByUrl('/');
+    } else {
+      this.router.navigateByUrl('/');
+    }
   }
 }
