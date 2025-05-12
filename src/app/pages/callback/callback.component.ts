@@ -13,30 +13,23 @@ export class CallbackComponent implements OnInit {
     private auth: AuthService
   ) {
   }
+
   ngOnInit() {
-    console.log('CallbackComponent initialized');
     this.route.queryParams.subscribe(params => {
-      console.log('params');
-      if (params['error']) {
+      const code = params['code']; // 🔑 Spotify gibt einen CODE zurück, keine Tokens!
+      const error = params['error'];
+      console.log(params);
+      console.log(code);
+      console.log(error);
+      if (code) {
+        // Code an AuthService übergeben → Tokens werden abgerufen
+        this.auth.exchangeCode(code);
+      } else if (error) {
+        console.error('Auth error:', error);
         this.auth.logout();
-        this.router.navigate(['/'], {queryParams: {error: params['error']}});
-        return;
+      } else {
+        this.router.navigate(['/']);
       }
-
-      const access = params['access'];
-      const refresh = params['refresh'];
-      const exp = +params['exp'];
-
-      if (!access || !refresh || isNaN(exp)) {
-        this.auth.logout();
-        this.router.navigate(['/'], {queryParams: {error: 'invalid_tokens'}});
-        return;
-      }
-
-      this.auth.setToken(access, refresh, exp);
-      const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';
-      sessionStorage.removeItem('redirectAfterLogin');
-      this.router.navigateByUrl(redirectUrl, {replaceUrl: true});
     });
   }
 }
