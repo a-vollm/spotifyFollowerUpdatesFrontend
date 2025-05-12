@@ -14,9 +14,11 @@ export class CallbackComponent implements OnInit {
   ) {
   }
   ngOnInit() {
+    console.log('CallbackComponent initialized');
     this.route.queryParams.subscribe(params => {
-      // Prüfe auf Fehler zuerst
+      console.log('params');
       if (params['error']) {
+        this.auth.logout();
         this.router.navigate(['/'], {queryParams: {error: params['error']}});
         return;
       }
@@ -25,20 +27,16 @@ export class CallbackComponent implements OnInit {
       const refresh = params['refresh'];
       const exp = +params['exp'];
 
-      // Validiere die Parameter
-      if (!access || !refresh || !exp || isNaN(exp)) {
+      if (!access || !refresh || isNaN(exp)) {
         this.auth.logout();
+        this.router.navigate(['/'], {queryParams: {error: 'invalid_tokens'}});
         return;
       }
 
       this.auth.setToken(access, refresh, exp);
-
-      // Navigiere mit Zeitverzögerung und Clear History
-      setTimeout(() => {
-        const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';
-        this.router.navigateByUrl(redirectUrl, {replaceUrl: true})
-          .then(() => sessionStorage.removeItem('redirectAfterLogin'));
-      }, 100);
+      const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';
+      sessionStorage.removeItem('redirectAfterLogin');
+      this.router.navigateByUrl(redirectUrl, {replaceUrl: true});
     });
   }
 }
