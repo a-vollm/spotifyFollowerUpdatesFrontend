@@ -13,19 +13,32 @@ export class CallbackComponent implements OnInit {
     private auth: AuthService
   ) {
   }
-
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
+      // Prüfe auf Fehler zuerst
+      if (params['error']) {
+        this.router.navigate(['/'], {queryParams: {error: params['error']}});
+        return;
+      }
+
       const access = params['access'];
       const refresh = params['refresh'];
       const exp = +params['exp'];
 
-      if (access && refresh && exp) {
-        this.auth.setToken(access, refresh, exp);
-        this.router.navigate(['/'], {replaceUrl: true});
+      // Validiere die Parameter
+      if (!access || !refresh || !exp || isNaN(exp)) {
+        this.auth.logout();
         return;
       }
 
+      this.auth.setToken(access, refresh, exp);
+
+      // Navigiere mit Zeitverzögerung und Clear History
+      setTimeout(() => {
+        const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';
+        this.router.navigateByUrl(redirectUrl, {replaceUrl: true})
+          .then(() => sessionStorage.removeItem('redirectAfterLogin'));
+      }, 100);
     });
   }
 }

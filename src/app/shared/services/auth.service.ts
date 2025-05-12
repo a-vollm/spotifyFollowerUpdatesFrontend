@@ -40,25 +40,37 @@ export class AuthService {
       });
   }
 
+// In der setToken-Methode:
   setToken(accessToken: string, refreshToken: string, expiresIn: number): void {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-    this.expiresAt = Date.now() + expiresIn * 1000;
+    // Füge Validierung hinzu
+    if (!accessToken || !refreshToken || !expiresIn) {
+      this.logout();
+      return;
+    }
 
-    sessionStorage.setItem('access_token', accessToken);
-    sessionStorage.setItem('refresh_token', refreshToken);
-    sessionStorage.setItem('expires_at', this.expiresAt.toString());
+    // Rest wie vorhanden
   }
 
+// In der loadFromStorage-Methode:
   private loadFromStorage(): void {
-    const access = sessionStorage.getItem('access_token');
-    const refresh = sessionStorage.getItem('refresh_token');
-    const expires = sessionStorage.getItem('expires_at');
+    try {
+      const access = sessionStorage.getItem('access_token');
+      const refresh = sessionStorage.getItem('refresh_token');
+      const expires = sessionStorage.getItem('expires_at');
 
-    if (access && refresh && expires) {
+      if (!access || !refresh || !expires) {
+        this.logout();
+        return;
+      }
+
+      this.expiresAt = parseInt(expires);
+      if (isNaN(this.expiresAt)) this.logout();
+
+      // Setze die Werte erst nach erfolgreicher Validierung
       this.accessToken = access;
       this.refreshToken = refresh;
-      this.expiresAt = parseInt(expires);
+    } catch {
+      this.logout();
     }
   }
 
