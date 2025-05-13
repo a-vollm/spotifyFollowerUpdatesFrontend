@@ -59,18 +59,29 @@ export class TabArtistsPage implements OnDestroy {
   isSwitchingView = false;
   progress = signal<CacheStatus>({loading: true, totalArtists: 0, doneArtists: 0});
   lastMonthOpen = signal('');
+  rawReleases = signal<MonthGroup[]>([]);
   monthData = computed(() =>
-    this.releases().map(group => {
-      const filtered = group.releases
+    this.rawReleases().map(group => {
+      const allReleases = group.releases;
+
+      const filtered = allReleases
         .filter(r => this.releaseType() === 'all' || r.album_type === this.releaseType())
         .sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime());
 
-      const albumCount = filtered.filter(r => r.album_type === 'album').length;
-      const singleCount = filtered.filter(r => r.album_type === 'single').length;
+      const albumCount = allReleases.filter(r => r.album_type === 'album').length;
+      const singleCount = allReleases.filter(r => r.album_type === 'single').length;
       const coverUrl = filtered[0]?.images[0]?.url || '';
-      return {month: group.month, releases: filtered, albumCount, singleCount, coverUrl};
+
+      return {
+        month: group.month,
+        releases: filtered,
+        albumCount,
+        singleCount,
+        coverUrl
+      };
     }).filter(g => g.releases.length > 0)
   );
+
 
   progressText = computed(() => {
     const p = this.progress();
@@ -83,13 +94,16 @@ export class TabArtistsPage implements OnDestroy {
   });
 
   totalCounts = computed(() => {
-    let all = 0, album = 0, single = 0;
-    this.monthData().forEach(g => {
-      all += g.releases.length;
-      album += g.albumCount;
-      single += g.singleCount;
+    let album = 0, single = 0;
+    this.rawReleases().forEach(g => {
+      album += g.releases.filter(r => r.album_type === 'album').length;
+      single += g.releases.filter(r => r.album_type === 'single').length;
     });
-    return {all, album, single};
+    return {
+      all: album + single,
+      album,
+      single
+    };
   });
 
   badgeVisibility = computed(() => {
@@ -150,9 +164,9 @@ export class TabArtistsPage implements OnDestroy {
     }
   }
 
-
   private async loadYear(year: string) {
     const data = await this.spotify.getReleasesForYear(year);
+    this.rawReleases.set(data);
     this.releases.set(data);
     data.length ? this.lastMonthOpen.set(data[0].month) : undefined;
   }
