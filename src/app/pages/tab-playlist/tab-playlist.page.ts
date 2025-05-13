@@ -101,6 +101,7 @@ export class TabPlaylistPage implements OnInit {
     const playlistId = '4QTlILYEMucSKLHptGxjAq';
     this.spotifyService.getPlaylistData(playlistId).subscribe(
       (data) => {
+        this.loading.set(false);
         const tracks = data['tracks'] as {
           added_by?: { id?: string; display_name?: string; [key: string]: any };
           [key: string]: any;
@@ -128,7 +129,6 @@ export class TabPlaylistPage implements OnInit {
 
         this.playlistGroupedByMonth.set(result);
         this.playlistData.set(data);
-        this.loading.set(false);
       },
       (error) => {
         console.error('Error loading playlist data', error);
