@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://spotifyfollowerupdates.onrender.com'
+  apiUrl: 'https://staging-spotifyfollowerupdates.onrender.com'
 };
 
 /*

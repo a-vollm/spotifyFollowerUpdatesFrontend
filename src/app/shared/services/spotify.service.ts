@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {io, Socket} from 'socket.io-client';
 import {firstValueFrom, Observable} from 'rxjs';
 import {environment} from '../../../environments/environment.prod';
@@ -31,6 +31,11 @@ export class SpotifyService {
     this.setupSocketEvents();
   }
 
+  private getHeaders(): HttpHeaders {
+    const uid = sessionStorage.getItem('uid') || '';
+    return new HttpHeaders({'x-user-id': uid});
+  }
+
   private setupSocketEvents() {
     this.socket.on('connect', () => {
       console.log('Mit Socket.IO-Server verbunden');
@@ -60,7 +65,7 @@ export class SpotifyService {
       applicationServerKey: this.urlBase64ToUint8Array('BPMdL97IPz7Ip88PI_0QpGXetjU2WgsT9NgwuAOWEBX6Avesjz3GNVXozknYFHrWVW4GeonB3_CwlLFOVMArOr8')
     });
 
-    await this.http.post(`${this.api}/subscribe`, sub).toPromise();
+    await this.http.post(`${this.api}/subscribe`, sub, {headers: this.getHeaders()}).toPromise();
     console.log('🔔 PushSubscription registriert:', sub);
   }
 
@@ -77,13 +82,17 @@ export class SpotifyService {
 
   async getCacheStatus(): Promise<CacheStatus> {
     return firstValueFrom(
-      this.http.get<CacheStatus>(`${this.api}/cache-status`)
+      this.http.get<CacheStatus>(`${this.api}/cache-status`, {
+        headers: this.getHeaders()
+      })
     );
   }
 
   async getLatest20(): Promise<any[]> {
     try {
-      return await firstValueFrom(this.http.get<any[]>(`${this.api}/latest`)) ?? [];
+      return await firstValueFrom(this.http.get<any[]>(`${this.api}/latest`, {
+        headers: this.getHeaders()
+      })) ?? [];
     } catch (error) {
       sessionStorage.removeItem('access_token');
       throw error;
@@ -92,7 +101,9 @@ export class SpotifyService {
 
   async getReleasesForYear(year: string): Promise<MonthGroup[]> {
     try {
-      return await firstValueFrom(this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`)) ?? [];
+      return await firstValueFrom(this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`, {
+        headers: this.getHeaders()
+      })) ?? [];
     } catch (error) {
       sessionStorage.removeItem('access_token');
       throw error;
@@ -100,6 +111,8 @@ export class SpotifyService {
   }
 
   getPlaylistData(playlistId: string): Observable<any> {
-    return this.http.get(`${this.api}/playlist/${playlistId}`);
+    return this.http.get(`${this.api}/playlist/${playlistId}`, {
+      headers: this.getHeaders()
+    });
   }
 }
