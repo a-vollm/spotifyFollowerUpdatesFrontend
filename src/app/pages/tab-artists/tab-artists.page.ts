@@ -189,6 +189,8 @@ export class TabArtistsPage implements OnDestroy {
   }
 
   openRelease(r: MonthGroup['releases'][0]) {
-    r.external_urls?.spotify ? window.open(r.external_urls.spotify, '_blank') : undefined;
+    if (r.external_urls?.spotify) {
+      window.location.href = r.external_urls.spotify;
+    }
   }
 }
