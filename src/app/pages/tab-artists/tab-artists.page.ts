@@ -111,7 +111,7 @@ export class TabArtistsPage implements OnDestroy {
     return {showAlbums: type !== 'single', showSingles: type !== 'album'};
   });
 
-  private unsubscribe: () => void;
+  private readonly unsubscribe: () => void;
 
   constructor(private spotify: SpotifyService) {
     addIcons({

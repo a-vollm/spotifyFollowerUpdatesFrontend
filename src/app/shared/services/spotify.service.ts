@@ -25,7 +25,7 @@ export class SpotifyService {
     this.socket = io(this.api, {
       transports: ['websocket'],
       auth: {
-        token: () => sessionStorage.getItem('access_token') ?? undefined
+        uid: localStorage.getItem('uid') ?? ''
       }
     });
     this.setupSocketEvents();
@@ -34,7 +34,7 @@ export class SpotifyService {
   }
 
   private getHeaders(): HttpHeaders {
-    const uid = sessionStorage.getItem('uid') || '';
+    const uid = localStorage.getItem('uid') || '';
     return new HttpHeaders({'x-user-id': uid});
   }
 
@@ -96,7 +96,6 @@ export class SpotifyService {
         headers: this.getHeaders()
       })) ?? [];
     } catch (error) {
-      sessionStorage.removeItem('access_token');
       throw error;
     }
   }
@@ -107,7 +106,6 @@ export class SpotifyService {
         headers: this.getHeaders()
       })) ?? [];
     } catch (error) {
-      sessionStorage.removeItem('access_token');
       throw error;
     }
   }

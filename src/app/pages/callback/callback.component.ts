@@ -22,7 +22,7 @@ export class CallbackComponent implements OnInit {
       const uid = p['uid'];
 
       if (access && refresh && exp && uid) {
-        this.auth.setToken(access, refresh, exp, uid);
+        this.auth.setUid(uid);
         this.router.navigate(['/'], {replaceUrl: true});
       } else {
         this.router.navigate(['/']);
