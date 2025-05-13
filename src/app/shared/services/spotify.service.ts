@@ -106,17 +106,21 @@ export class SpotifyService {
         headers: this.getHeaders()
       })) ?? [];
     } catch (err) {
-      if (err.status === 401) {
-        localStorage.removeItem('uid');
-        window.location.href = `${environment.apiUrl}/auth/spotify`;
-      }
+      localStorage.removeItem('uid');
+      window.location.href = `${environment.apiUrl}/auth/spotify`;
       throw err
     }
   }
 
   getPlaylistData(playlistId: string): Observable<any> {
-    return this.http.get(`${this.api}/playlist/${playlistId}`, {
-      headers: this.getHeaders()
-    });
+    try {
+      return this.http.get(`${this.api}/playlist/${playlistId}`, {
+        headers: this.getHeaders()
+      });
+    } catch (err) {
+      localStorage.removeItem('uid');
+      window.location.href = `${environment.apiUrl}/auth/spotify`;
+      throw err
+    }
   }
 }
