@@ -83,11 +83,19 @@ export class SpotifyService {
   }
 
   async getCacheStatus(): Promise<CacheStatus> {
-    return firstValueFrom(
-      this.http.get<CacheStatus>(`${this.api}/cache-status`, {
-        headers: this.getHeaders()
-      })
-    );
+    try {
+      return firstValueFrom(
+        this.http.get<CacheStatus>(`${this.api}/cache-status`, {
+          headers: this.getHeaders()
+        })
+      );
+    } catch (err) {
+      if (err.status === 401) {
+        localStorage.removeItem('uid');
+        window.location.href = `${environment.apiUrl}/auth/spotify`;
+      }
+      throw err
+    }
   }
 
   async getLatest20(): Promise<any[]> {
@@ -106,7 +114,10 @@ export class SpotifyService {
         headers: this.getHeaders()
       })) ?? [];
     } catch (err) {
-      localStorage.removeItem('uid');
+      if (err.status === 401) {
+        localStorage.removeItem('uid');
+        window.location.href = `${environment.apiUrl}/auth/spotify`;
+      }
       throw err
     }
   }
@@ -117,7 +128,10 @@ export class SpotifyService {
         headers: this.getHeaders()
       });
     } catch (err) {
-      localStorage.removeItem('uid');
+      if (err.status === 401) {
+        localStorage.removeItem('uid');
+        window.location.href = `${environment.apiUrl}/auth/spotify`;
+      }
       throw err
     }
   }
