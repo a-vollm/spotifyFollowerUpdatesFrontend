@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, effect, OnInit, signal} from '@angular/core';
 import {SpotifyService} from '../../shared/services/spotify.service';
 import {
   IonAccordion,
@@ -82,9 +82,15 @@ export class TabPlaylistPage implements OnInit {
   playlistData = signal<any>(null);
   loading = signal<boolean>(true);
   playlistGroupedByMonth = signal<{ month: string; tracks: PlaylistTrack[] }[]>([]);
+  lastMonthOpen = signal<string | undefined>(undefined)
 
   constructor(private spotifyService: SpotifyService) {
-    console.log('ngOnInit');
+    effect(() => {
+      const groups = this.playlistGroupedByMonth();
+      if (groups.length) {
+        this.lastMonthOpen.set(groups[0].month);
+      }
+    });
   }
 
   ngOnInit() {
@@ -95,7 +101,6 @@ export class TabPlaylistPage implements OnInit {
     const playlistId = '4QTlILYEMucSKLHptGxjAq';
     this.spotifyService.getPlaylistData(playlistId).subscribe(
       (data) => {
-        console.log(data);
         const tracks = data['tracks'] as {
           added_by?: { id?: string; display_name?: string; [key: string]: any };
           [key: string]: any;
@@ -123,7 +128,6 @@ export class TabPlaylistPage implements OnInit {
 
         this.playlistGroupedByMonth.set(result);
         this.playlistData.set(data);
-        console.log(data);
         this.loading.set(false);
       },
       (error) => {

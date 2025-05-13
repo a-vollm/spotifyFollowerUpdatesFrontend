@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {IonButton, IonContent, IonHeader, IonTitle, IonToolbar, Platform} from '@ionic/angular/standalone';
+import {IonButton, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar} from '@ionic/angular/standalone';
 import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
 import {SwUpdate} from '@angular/service-worker';
 
@@ -10,12 +10,12 @@ import {SwUpdate} from '@angular/service-worker';
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonButton]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonButton, IonIcon]
 })
 export class SettingsPage {
+  updateText = signal<string>('')
 
   constructor(
-    private platform: Platform,
     private swUpdate: SwUpdate
   ) {
   }
@@ -35,8 +35,8 @@ export class SettingsPage {
         const registration = await navigator.serviceWorker.register('ngsw-worker.js');
         console.log('Service Worker registriert:', registration);
 
-        registration.showNotification('Hallo 👋', {
-          body: 'Dies ist eine Testbenachrichtigung.',
+        registration.showNotification('Benachrichtigungen erfolgreich aktiviert', {
+          body: 'Nun erhälst du Benachrichtigungen zu den neusten Releases',
           icon: '/assets/icons/icon-192x192.png',
           badge: '/assets/icons/badge.png'
         });
@@ -55,9 +55,13 @@ export class SettingsPage {
         if (hasUpdate) {
           this.swUpdate.activateUpdate().then(() => {
             document.location.reload();
+
+            this.updateText.set('Update successfully installed')
+            setTimeout(() => this.updateText.set(''), 3000)
           });
         } else {
-          console.log('Kein Update verfügbar');
+          this.updateText.set('No update available')
+          setTimeout(() => this.updateText.set(''), 3000)
         }
       });
     }

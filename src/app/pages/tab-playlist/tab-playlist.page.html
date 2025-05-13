@@ -32,9 +32,9 @@
     @if (playlistData()) {
       <ion-card>
         <ion-card-content>
-          <ion-accordion-group>
+          <ion-accordion-group [value]="lastMonthOpen()">
             @for (group of playlistGroupedByMonth(); track group.month) {
-              <ion-accordion>
+              <ion-accordion [value]="group.month">
                 <ion-item slot="header" color="light">
                   <ion-label>{{ group.month }}</ion-label>
                 </ion-item>

@@ -1,15 +1,24 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title size="large">settings</ion-title>
+    <ion-title size="large">
+      <ion-icon name="settings-outline"></ion-icon>
+      Settings
+    </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content [fullscreen]="true">
-  <ion-button (click)="initPush()">
-    Allow notification
-  </ion-button>
 
-  <ion-button (click)="checkForUpdate()">
-    Check for update
-  </ion-button>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="settings-container">
+    <ion-button expand="block" size="large" (click)="initPush()">
+      Allow Notifications
+    </ion-button>
+
+    <ion-button expand="block" size="large" fill="outline" (click)="checkForUpdate()">
+      Check for Update
+    </ion-button>
+
+    {{ updateText() }}
+  </div>
 </ion-content>
+
 <app-footer-navigation></app-footer-navigation>
