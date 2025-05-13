@@ -35,7 +35,7 @@ export class SettingsPage {
         const registration = await navigator.serviceWorker.register('ngsw-worker.js');
         console.log('Service Worker registriert:', registration);
 
-        registration.showNotification('Benachrichtigungen erfolgreich aktiviert', {
+        registration.showNotification('Benachrichtigungen aktiviert', {
           body: 'Nun erhälst du Benachrichtigungen zu den neusten Releases',
           icon: '/assets/icons/icon-192x192.png',
           badge: '/assets/icons/badge.png'
