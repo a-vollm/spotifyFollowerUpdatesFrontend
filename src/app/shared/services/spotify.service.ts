@@ -105,8 +105,12 @@ export class SpotifyService {
       return await firstValueFrom(this.http.get<MonthGroup[]>(`${this.api}/releases/${year}`, {
         headers: this.getHeaders()
       })) ?? [];
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      if (err.status === 401) {
+        localStorage.removeItem('uid');
+        window.location.href = `${environment.apiUrl}/auth/spotify`;
+      }
+      throw err
     }
   }
 
