@@ -29,6 +29,8 @@ export class SpotifyService {
       }
     });
     this.setupSocketEvents();
+
+    console.log(environment.apiUrl)
   }
 
   private getHeaders(): HttpHeaders {
