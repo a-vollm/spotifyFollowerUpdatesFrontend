@@ -42,6 +42,7 @@ interface PlaylistTrack {
   track: {
     id: string;
     name: string;
+    external_urls: { spotify: string };
     artists: { name: string }[];
     album: {
       images: { url: string }[];
@@ -101,6 +102,7 @@ export class TabPlaylistPage implements OnInit {
     const playlistId = '4QTlILYEMucSKLHptGxjAq';
     this.spotifyService.getPlaylistData(playlistId).subscribe(
       (data) => {
+        console.log(data)
         this.loading.set(false);
         const tracks = data['tracks'] as {
           added_by?: { id?: string; display_name?: string; [key: string]: any };
@@ -156,4 +158,9 @@ export class TabPlaylistPage implements OnInit {
     return `hsl(${hue}, 65%, 50%)`;
   }
 
+  openRelease(r: PlaylistTrack) {
+    if (r.track.external_urls.spotify) {
+      window.location.href = r.track.external_urls.spotify;
+    }
+  }
 }

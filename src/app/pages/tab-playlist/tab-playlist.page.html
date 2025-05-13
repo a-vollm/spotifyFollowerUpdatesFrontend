@@ -41,7 +41,7 @@
                 <div slot="content">
                   <ion-list>
                     @for (track of group.tracks; track track.track.id) {
-                      <ion-item>
+                      <ion-item (click)="openRelease(track)">
                         <ion-thumbnail slot="start">
                           <img [src]="track.track.album.images[0]?.url">
                         </ion-thumbnail>
