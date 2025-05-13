@@ -107,7 +107,6 @@ export class SpotifyService {
       })) ?? [];
     } catch (err) {
       localStorage.removeItem('uid');
-      window.location.href = `${environment.apiUrl}/auth/spotify`;
       throw err
     }
   }
@@ -119,7 +118,6 @@ export class SpotifyService {
       });
     } catch (err) {
       localStorage.removeItem('uid');
-      window.location.href = `${environment.apiUrl}/auth/spotify`;
       throw err
     }
   }
