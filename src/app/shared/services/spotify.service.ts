@@ -90,10 +90,9 @@ export class SpotifyService {
         })
       );
     } catch (err) {
-      if (err.status === 401) {
         localStorage.removeItem('uid');
         window.location.href = `${environment.apiUrl}/auth/spotify`;
-      }
+
       throw err
     }
   }
@@ -114,10 +113,8 @@ export class SpotifyService {
         headers: this.getHeaders()
       })) ?? [];
     } catch (err) {
-      if (err.status === 401) {
         localStorage.removeItem('uid');
         window.location.href = `${environment.apiUrl}/auth/spotify`;
-      }
       throw err
     }
   }
@@ -128,10 +125,9 @@ export class SpotifyService {
         headers: this.getHeaders()
       });
     } catch (err) {
-      if (err.status === 401) {
         localStorage.removeItem('uid');
         window.location.href = `${environment.apiUrl}/auth/spotify`;
-      }
+
       throw err
     }
   }
