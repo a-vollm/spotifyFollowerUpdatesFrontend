@@ -128,13 +128,15 @@ export class TabArtistsPage implements OnDestroy {
       const cur = untracked(this.progress);
 
       if (cur.totalArtists !== total || cur.doneArtists !== done) {
-        this.progress.set({
-          ...cur,
-          totalArtists: total,
-          doneArtists: done
-        });
+        this.progress.set({...cur, totalArtists: total, doneArtists: done});
+
+        if (total > 0 && done >= total && this.loading()) {
+          this.loadYear(this.selectedYear());   // async aufrufen
+          this.loading.set(false);
+        }
       }
     });
+
   }
 
   ngOnDestroy() {
