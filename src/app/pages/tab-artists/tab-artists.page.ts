@@ -124,21 +124,22 @@ export class TabArtistsPage implements OnDestroy {
     this.unsubscribe = () => this.spotify.socket.off('cacheUpdated', handler);
 
     effect(() => {
-      // nur cacheProgress ist die reaktive Quelle
       const {total, done} = this.spotify.cacheProgress();
-
-      // progress nicht-reaktiv lesen → kein retrigger
       const cur = untracked(this.progress);
 
-      // nur setzen, wenn sich etwas ändert
       if (cur.totalArtists !== total || cur.doneArtists !== done) {
         this.progress.set({
           ...cur,
           totalArtists: total,
           doneArtists: done
         });
+
+        if (total > 0 && done >= total) {
+          this.loading.set(false);
+        }
       }
     });
+
 
   }
 
@@ -150,24 +151,10 @@ export class TabArtistsPage implements OnDestroy {
     this.loading.set(true);
 
     try {
-      // wiederholt /cache-status abfragen,
-      // bis loading=false oder ein Fehler auftritt
-      await this.waitForCacheReady();
       await this.loadYear(this.selectedYear());
     } catch (e) {
       console.error(e);
-    } finally {
-      this.loading.set(false);   // jetzt erst!
-    }
-  }
-
-  /* ------------ Hilfs-Funktion ------------ */
-  private async waitForCacheReady() {
-    while (true) {
-      const status = await this.spotify.getCacheStatus();
-      this.progress.set(status);           // Fortschritt aktualisieren
-      if (!status.loading) return;         // fertig → raus
-      await new Promise(r => setTimeout(r, 1500)); // 1,5 s warten, dann neu holen
+      this.loading.set(false);  // nur bei Fehler abbrechen
     }
   }
 
