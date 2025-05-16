@@ -7,10 +7,10 @@
           <div class="playlist-meta">
             <ion-card-title>{{ playlistData().name }}</ion-card-title>
             @if (playlistData().description) {
-              <ion-card-subtitle>{{ playlistData().description }}</ion-card-subtitle>
+              <ion-card-subtitle class="playlist-description">{{ playlistData().description }}</ion-card-subtitle>
             }
             <ion-card-subtitle>
-              <span>Tracks ({{ playlistData().tracks.length }})</span>
+              <span class="track-count">Tracks ({{ playlistData().tracks.length }})</span>
             </ion-card-subtitle>
           </div>
         </ion-card-header>

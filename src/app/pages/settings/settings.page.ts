@@ -1,52 +1,53 @@
 import {Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {IonButton, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar} from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToggle,
+  IonToolbar
+} from '@ionic/angular/standalone';
 import {FooterNavigationComponent} from '../../shared/features/footer-navigation/footer-navigation.component';
 import {SwUpdate} from '@angular/service-worker';
+import {addIcons} from 'ionicons';
+import {cloudDownloadOutline, settingsOutline} from 'ionicons/icons';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonButton, IonIcon]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, FooterNavigationComponent, IonButton, IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonToggle]
 })
 export class SettingsPage {
   updateText = signal<string>('')
+  yearOptions = Array.from({length: 30}, (_, i) => i + 1);
+  selectedCount = Number(localStorage.getItem('release_years') || '3');
+  selectedPrimary = localStorage.getItem('color-primary') || '#ffc815';
+  selectedSecondary = localStorage.getItem('color-secondary') || '#0ce3ff';
+  darkMode = localStorage.getItem('theme') === 'dark';
 
-  constructor(
-    private swUpdate: SwUpdate
-  ) {
+  constructor(private swUpdate: SwUpdate) {
+    addIcons({
+      'cloud-download-outline': cloudDownloadOutline,
+      'settings-outline': settingsOutline,
+    });
   }
 
-  protected async initPush() {
-    const permission = await Notification.requestPermission();
-    console.log(permission)
-    if (permission !== 'granted') {
-      console.warn('Benachrichtigungen abgelehnt');
-      return;
-    }
+  setColor(variable: 'primary' | 'secondary' | 'background', color: string) {
+    const cssVar = variable === 'background' ? '--ion-background-color' : `--ion-color-${variable}`;
+    document.documentElement.style.setProperty(cssVar, color);
+    localStorage.setItem(`color-${variable}`, color);
 
-    console.log('Benachrichtigungen erlaubt');
-
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('ngsw-worker.js');
-        console.log('Service Worker registriert:', registration);
-
-        registration.showNotification('Benachrichtigungen aktiviert', {
-          body: 'Nun erhälst du Benachrichtigungen zu den neusten Releases',
-          icon: '/assets/icons/icon-192x192.png',
-          badge: '/assets/icons/badge.png'
-        });
-
-      } catch (error) {
-        console.error('Fehler beim Registrieren des Service Workers:', error);
-      }
-    } else {
-      console.warn('Service Worker wird nicht unterstützt');
-    }
+    if (variable === 'primary') this.selectedPrimary = color;
+    if (variable === 'secondary') this.selectedSecondary = color;
   }
 
   checkForUpdate() {
@@ -65,5 +66,29 @@ export class SettingsPage {
         }
       });
     }
+  }
+
+  onChangeCount(count: number) {
+    this.selectedCount = count;
+    localStorage.setItem('release_years', String(count));
+  }
+
+  onColorChange(variable: 'primary' | 'secondary' | 'background', event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.setColor(variable, input.value);
+  }
+
+  toggleDarkMode(enabled: boolean) {
+    this.darkMode = enabled;
+
+    const mode = enabled ? 'dark' : 'light';
+    document.body.setAttribute('color-theme', mode);
+    localStorage.setItem('theme', mode);
+  }
+
+  resetApp() {
+    document.body.setAttribute('color-theme', 'dark');
+    this.setColor('primary', '#ffc815');
+    this.setColor('secondary', '#0ce3ff');
   }
 }

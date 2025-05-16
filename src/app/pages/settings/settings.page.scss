@@ -1,6 +1,39 @@
-.settings-container {
+.settings-section {
+  margin-block: 1.5rem;
+
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+  }
+
+  .update-text {
+    text-align: center;
+
+  }
+}
+
+.color-row {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--ion-color-step-150);
+}
+
+.color-preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--ion-color-medium);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-right: 0.2rem;
+}
+
+.hidden-color {
+  display: none;
 }

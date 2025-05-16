@@ -4,9 +4,38 @@
   --ion-color-primary: #ffc815;
   --ion-color-secondary: #0ce3ff;
   --ion-color-primary-rgb: 29, 185, 84;
-  --ion-background-color: #121212;
-  --ion-text-color: #ffffff;
   --app-height: 10dvh;
+  --base-color: #ffffff;
+}
+
+body[color-theme='dark'] {
+  --ion-text-color: #ffffff;
+  --ion-background-color: #121212;
+  --background: #121212;
+  --ion-item-background: #1e1e1e;
+}
+
+body[color-theme='light'] {
+  --base-color: #3a3a3a;
+  --ion-text-color: #1b1b1b;
+  --ion-background-color: #ffffff;
+  --background: #ff0000;
+  --ion-color-base: #ff0000;
+  --ion-item-background: #ffffff;
+
+  .in-segment-color, .year-segment, ion-card-title, .track-count, ion-card-subtitle {
+    color: var(--base-color) !important;
+    text-shadow: unset !important;
+  }
+
+  .playlist-description {
+    color: var(--ion-color-secondary) !important;
+  }
+
+  ion-accordion, ion-card-content, ion-card-header, ion-card, ion-toolbar, ion-card-title {
+    --background: #f4f4f4;
+    box-shadow: unset;
+  }
 }
 
 html, body, ion-app, ion-content {
@@ -51,20 +80,6 @@ ion-content {
   height: 50vh;
   gap: 1rem;
   text-align: center;
-}
-
-
-ion-header {
-  background: #181818 !important;
-
-  ion-card {
-    box-shadow: unset !important;
-  }
-
-  > ion-toolbar {
-    background: #181818 !important;
-
-  }
 }
 
 

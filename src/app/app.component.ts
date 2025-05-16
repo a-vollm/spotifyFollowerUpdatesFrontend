@@ -14,6 +14,14 @@ export class AppComponent implements OnInit {
     private spotifyService: SpotifyService,
     private platform: Platform
   ) {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedPrimary = localStorage.getItem('color-primary');
+    const savedSecondary = localStorage.getItem('color-secondary');
+
+    document.body.setAttribute('color-theme', savedTheme);
+    savedPrimary ? document.documentElement.style.setProperty('--ion-color-primary', savedPrimary) : undefined;
+    savedSecondary ? document.documentElement.style.setProperty('--ion-color-secondary', savedSecondary) : undefined;
+
   }
 
   ngOnInit() {
@@ -22,5 +30,4 @@ export class AppComponent implements OnInit {
 
     });
   }
-
 }

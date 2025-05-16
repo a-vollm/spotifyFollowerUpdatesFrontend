@@ -43,18 +43,15 @@ import {FooterNavigationComponent} from '../../shared/features/footer-navigation
   styleUrls: ['./tab-artists.page.scss']
 })
 export class TabArtistsPage implements OnDestroy {
-  years = signal(
-    Array.from({length: 3}, (_, i) => String(new Date().getFullYear() - i))
-  );
+  years = signal<string[]>([]);
   selectedYear = signal(this.years()[0]);
   releaseType = signal<'all' | 'album' | 'single'>('all');
-
   releases = signal<MonthGroup[]>([]);
+  rawReleases = signal<MonthGroup[]>([]);
   loading = signal(true);
   isSwitchingView = false;
   progress = signal<CacheStatus>({loading: true, totalArtists: 0, doneArtists: 0});
   lastMonthOpen = signal('');
-  rawReleases = signal<MonthGroup[]>([]);
   monthData = computed(() =>
     this.rawReleases().map(group => {
       const allReleases = group.releases;
@@ -76,7 +73,6 @@ export class TabArtistsPage implements OnDestroy {
       };
     }).filter(g => g.releases.length > 0)
   );
-
 
   progressText = computed(() => {
     const p = this.progress();
@@ -109,6 +105,8 @@ export class TabArtistsPage implements OnDestroy {
   private readonly unsubscribe: () => void;
 
   constructor(private spotify: SpotifyService) {
+    this.updateYearsList();
+    this.selectedYear.set(this.years()[0]);
     addIcons({
       'musical-notes': musicalNotesOutline,
       disc: discOutline,
@@ -131,7 +129,7 @@ export class TabArtistsPage implements OnDestroy {
         this.progress.set({...cur, totalArtists: total, doneArtists: done});
 
         if (total > 0 && done >= total && this.loading()) {
-          this.loadYear(this.selectedYear());   // async aufrufen
+          this.loadYear(this.selectedYear());
           this.loading.set(false);
         }
       }
@@ -147,12 +145,12 @@ export class TabArtistsPage implements OnDestroy {
     this.loading.set(true);
 
     try {
-      const status = await this.spotify.getCacheStatus(); // ← einmal reicht
+      const status = await this.spotify.getCacheStatus();
       this.progress.set(status);
 
       if (!status.loading) {
-        await this.loadYear(this.selectedYear());
         this.loading.set(false);
+        await this.loadYear(this.selectedYear());
       }
     } catch (e) {
       console.error(e);
@@ -164,13 +162,15 @@ export class TabArtistsPage implements OnDestroy {
     const data = await this.spotify.getReleasesForYear(year);
     this.rawReleases.set(data);
     this.releases.set(data);
-    data.length ? this.lastMonthOpen.set(data[0].month) : undefined;
+    setTimeout(() => data.length ? this.lastMonthOpen.set(data[0].month) : undefined, 500);
   }
 
-  selectYear(value: string | number) {
+  async selectYear(value: string | number) {
     this.isSwitchingView = true;
-    this.selectedYear.set(String(value));
+    const year = String(value);
+    this.selectedYear.set(year);
 
+    await this.loadYear(year);
     setTimeout(() => {
       this.isSwitchingView = false;
       const groups = this.monthData();
@@ -182,6 +182,18 @@ export class TabArtistsPage implements OnDestroy {
     this.isSwitchingView = true;
     this.releaseType.set(String(value) as 'all' | 'album' | 'single');
     setTimeout(() => this.isSwitchingView = false);
+  }
+
+  private getYearCount(): number {
+    return Number(localStorage.getItem('release_years') || '3');
+  }
+
+  private updateYearsList() {
+    const count = this.getYearCount();
+    const list = Array.from({length: count}, (_, i) =>
+      String(new Date().getFullYear() - i)
+    );
+    this.years.set(list);
   }
 
   openRelease(r: MonthGroup['releases'][0]) {

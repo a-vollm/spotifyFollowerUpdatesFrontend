@@ -3,4 +3,9 @@
   bottom: 56px;
   width: 100%;
   z-index: 99999;
+
+  ion-label, ion-icon {
+    color: var(--backgroud);
+  }
 }
+

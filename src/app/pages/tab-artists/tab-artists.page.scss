@@ -117,7 +117,6 @@ ion-item-divider {
   }
 }
 
-
 .radial-wrapper {
   display: flex;
   justify-content: center;
@@ -127,8 +126,8 @@ ion-item-divider {
 
 .radial-border {
   --size: 20rem;
-  --track: var(--ion-color-secondary);
-  --fill: var(--ion-color-primary);
+  --track: var(--ion-color-primary);
+  --fill: var(--ion-color-primary--ion-color-secondary);
   --val: 0deg;
 
   width: var(--size);

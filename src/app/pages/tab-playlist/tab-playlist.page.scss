@@ -35,7 +35,7 @@ ion-card-title {
 }
 
 ion-card-subtitle {
-  color: #ffc815;
+  color: var(--ion-color-secondary);
   font-size: 0.8rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 
