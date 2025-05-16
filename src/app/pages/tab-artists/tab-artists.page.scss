@@ -116,3 +116,48 @@ ion-item-divider {
     border-radius: 12px;
   }
 }
+
+
+.radial-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.radial-border {
+  --size: 120px;
+  --track: var(--ion-color-secondary);
+  --fill: var(--ion-color-primary);
+  --val: 0deg;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ion-color-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--track);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--fill);
+    mask: conic-gradient(var(--fill) var(--val), transparent 0deg);
+    -webkit-mask: conic-gradient(var(--fill) var(--val), transparent 0deg);
+    mask-composite: intersect;
+    -webkit-mask-composite: destination-in;
+  }
+}

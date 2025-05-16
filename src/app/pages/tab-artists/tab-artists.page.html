@@ -15,12 +15,10 @@
 
 <ion-content [fullscreen]="true">
   @if (loading()) {
-    <div class="loading-container">
-      <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <ion-text color="medium">
-        <p>{{ progressText() }}</p>
-      </ion-text>
-      <ion-progress-bar [value]="progressValue()" color="primary"></ion-progress-bar>
+    <div class="loading-container radial-wrapper">
+      <div class="radial-border" [style.--val]="(progressValue() * 360) + 'deg'">
+        <span>{{ progressText() }}</span>
+      </div>
     </div>
   } @else {
     <ion-segment [value]="releaseType()" (ionChange)="setReleaseType($event.detail.value)" color="primary"

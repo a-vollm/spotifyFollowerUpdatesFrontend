@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {io, Socket} from 'socket.io-client';
 import {firstValueFrom, Observable} from 'rxjs';
@@ -20,6 +20,8 @@ export class SpotifyService {
   private isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   private api = this.isLocalhost ? '' : environment.apiUrl;
   socket: Socket;
+  cacheProgress = signal<{ total: number; done: number }>({total: 0, done: 0});
+
 
   constructor(private http: HttpClient) {
     this.socket = io(this.api, {
@@ -48,6 +50,10 @@ export class SpotifyService {
       this.getLatest20().then(data => {
         console.log('Neue Daten empfangen:', data);
       });
+    });
+
+    this.socket.on('cache-progress', (data) => {
+      this.cacheProgress.set(data);
     });
 
     this.socket.on('socketTest', () => {

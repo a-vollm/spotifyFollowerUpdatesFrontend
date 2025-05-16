@@ -1,4 +1,4 @@
-import {Component, computed, effect, OnDestroy, signal} from '@angular/core';
+import {Component, computed, effect, OnDestroy, signal, untracked} from '@angular/core';
 import {CacheStatus, MonthGroup, SpotifyService} from '../../shared/services/spotify.service';
 import {
   IonAccordion,
@@ -14,12 +14,9 @@ import {
   IonLabel,
   IonList,
   IonNote,
-  IonProgressBar,
   IonSegment,
   IonSegmentButton,
   IonSkeletonText,
-  IonSpinner,
-  IonText,
   IonToolbar
 } from '@ionic/angular/standalone';
 import {DatePipe} from '@angular/common';
@@ -39,9 +36,7 @@ import {FooterNavigationComponent} from '../../shared/features/footer-navigation
   selector: 'app-tab-artists',
   templateUrl: './tab-artists.page.html',
   imports: [
-    IonHeader, IonContent, IonSpinner,
-    IonText, IonSegment, IonSegmentButton, IonProgressBar,
-    IonSkeletonText, IonAccordionGroup, IonAccordion, IonItem,
+    IonHeader, IonContent, IonSegment, IonSegmentButton, IonSkeletonText, IonAccordionGroup, IonAccordion, IonItem,
     IonIcon, IonBadge, IonList, IonAvatar, IonNote,
     IonCard, IonCardContent, DatePipe, IonLabel, FooterNavigationComponent, IonToolbar
   ],
@@ -129,10 +124,22 @@ export class TabArtistsPage implements OnDestroy {
     this.unsubscribe = () => this.spotify.socket.off('cacheUpdated', handler);
 
     effect(() => {
-      if (!this.progress().loading) {
-        this.loadYear(this.selectedYear());
+      // nur cacheProgress ist die reaktive Quelle
+      const {total, done} = this.spotify.cacheProgress();
+
+      // progress nicht-reaktiv lesen → kein retrigger
+      const cur = untracked(this.progress);
+
+      // nur setzen, wenn sich etwas ändert
+      if (cur.totalArtists !== total || cur.doneArtists !== done) {
+        this.progress.set({
+          ...cur,
+          totalArtists: total,
+          doneArtists: done
+        });
       }
     });
+
   }
 
   ngOnDestroy() {
