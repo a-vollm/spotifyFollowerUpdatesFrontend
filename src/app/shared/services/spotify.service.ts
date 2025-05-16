@@ -45,15 +45,17 @@ export class SpotifyService {
       console.log('Mit Socket.IO-Server verbunden');
     });
 
+    this.socket.on('cache-progress', (data) => {
+      console.log('Cache progress:', data);
+      this.cacheProgress.set(data);
+    });
+
+
     this.socket.on('cacheUpdated', () => {
       console.log('Cache aktualisiert - neue Daten werden geladen');
       this.getLatest20().then(data => {
         console.log('Neue Daten empfangen:', data);
       });
-    });
-
-    this.socket.on('cache-progress', (data) => {
-      this.cacheProgress.set(data);
     });
 
     this.socket.on('socketTest', () => {

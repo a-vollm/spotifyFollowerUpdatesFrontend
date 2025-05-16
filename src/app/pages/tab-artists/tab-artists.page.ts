@@ -133,14 +133,8 @@ export class TabArtistsPage implements OnDestroy {
           totalArtists: total,
           doneArtists: done
         });
-
-        if (total > 0 && done >= total) {
-          this.loading.set(false);
-        }
       }
     });
-
-
   }
 
   ngOnDestroy() {
@@ -151,10 +145,16 @@ export class TabArtistsPage implements OnDestroy {
     this.loading.set(true);
 
     try {
-      await this.loadYear(this.selectedYear());
+      const status = await this.spotify.getCacheStatus(); // ← einmal reicht
+      this.progress.set(status);
+
+      if (!status.loading) {
+        await this.loadYear(this.selectedYear());
+        this.loading.set(false);
+      }
     } catch (e) {
       console.error(e);
-      this.loading.set(false);  // nur bei Fehler abbrechen
+      this.loading.set(false);
     }
   }
 
