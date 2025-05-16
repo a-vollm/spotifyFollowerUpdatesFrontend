@@ -122,10 +122,11 @@ ion-item-divider {
   display: flex;
   justify-content: center;
   padding: 2rem;
+  margin-top: 5rem;
 }
 
 .radial-border {
-  --size: 120px;
+  --size: 20rem;
   --track: var(--ion-color-secondary);
   --fill: var(--ion-color-primary);
   --val: 0deg;
@@ -146,7 +147,7 @@ ion-item-divider {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 3px solid var(--track);
+    border: 10px solid var(--track);
   }
 
   &::after {
@@ -154,7 +155,7 @@ ion-item-divider {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 3px solid var(--fill);
+    border: 10px solid var(--fill);
     mask: conic-gradient(var(--fill) var(--val), transparent 0deg);
     -webkit-mask: conic-gradient(var(--fill) var(--val), transparent 0deg);
     mask-composite: intersect;
