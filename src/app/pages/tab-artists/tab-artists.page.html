@@ -4,7 +4,7 @@
     @for (y of years(); track $index) {
       <ion-segment-button [value]="y" class="year-segment">
         <ion-label>
-          <ion-icon name="calendar" color="primary"></ion-icon>
+          <ion-icon style="color: var(--color-navigation)" name="calendar" color="primary"></ion-icon>
           {{ y }}
         </ion-label>
       </ion-segment-button>
@@ -17,7 +17,7 @@
   @if (loading()) {
     <div class="loading-container radial-wrapper">
       <div class="radial-border" [style.--val]="(progressValue() * 360) + 'deg'">
-        <span>{{ progressText() }}</span>
+        <span style="color: var(--color-navigation)">{{ progressText() }}</span>
       </div>
     </div>
   } @else {
@@ -29,7 +29,7 @@
       </ion-segment-button>
       <ion-segment-button value="album">
         <ion-label>Albums</ion-label>
-        <ion-badge color="primary">{{ totalCounts().album }}</ion-badge>
+        <ion-badge color="primary" style="color: var(--color-navigation)">{{ totalCounts().album }}</ion-badge>
       </ion-segment-button>
       <ion-segment-button value="single">
         <ion-label>Singles</ion-label>
