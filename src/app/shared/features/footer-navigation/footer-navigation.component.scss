@@ -1,11 +1,18 @@
 :host {
-  position: fixed;
-  bottom: 1rem;
+  display: block;
   width: 100%;
-  z-index: 99999;
 
-  ion-label, ion-icon {
+  ion-label,
+  ion-icon {
     color: var(--color-navigation);
   }
-}
 
+  ion-tab-bar {
+    position: absolute;
+    bottom: env(safe-area-inset-bottom, 0);
+    width: 100%;
+    height: 56px;
+    background: var(--ion-color-primary) !important;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+}

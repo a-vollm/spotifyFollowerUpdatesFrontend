@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs,} from '@ionic/angular/standalone';
+import {IonIcon, IonLabel, IonTabBar, IonTabButton,} from '@ionic/angular/standalone';
 import {addIcons} from 'ionicons';
 import {calendarOutline, discOutline, settingsOutline} from 'ionicons/icons';
 import {RouterLink} from '@angular/router';
@@ -9,7 +9,6 @@ import {RouterLink} from '@angular/router';
   templateUrl: './footer-navigation.component.html',
   styleUrls: ['./footer-navigation.component.scss'],
   imports: [
-    IonTabs,
     IonTabButton,
     IonTabBar,
     IonIcon,

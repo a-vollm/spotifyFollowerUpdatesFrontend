@@ -28,11 +28,15 @@ bootstrapApplication(AppComponent, {
 });
 
 function setAppHeight() {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-  document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+  const height = window.visualViewport?.height || window.innerHeight;
+  document.documentElement.style.setProperty('--app-height', `${height}px`);
+  document.documentElement.style.setProperty('--vh', `${height * 0.01}px`);
 }
 
 window.addEventListener('resize', setAppHeight);
 window.addEventListener('orientationchange', setAppHeight);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', setAppHeight);
+  window.visualViewport.addEventListener('scroll', setAppHeight); // besonders wichtig für iOS
+}
 setAppHeight();

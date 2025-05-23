@@ -4,6 +4,7 @@
   "description": "An app to view Spotify music releases.",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
