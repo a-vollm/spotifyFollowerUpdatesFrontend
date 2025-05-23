@@ -97,5 +97,6 @@ export class SettingsPage {
     document.body.setAttribute('color-theme', 'dark');
     this.setColor('primary', '#ffc815');
     this.setColor('secondary', '#0ce3ff');
+    this.setColor('navigation', '#0e0c0c');
   }
 }
