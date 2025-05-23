@@ -26,7 +26,6 @@
   <ion-item lines="full">
     <ion-label>Primärfarbe</ion-label>
     <label class="color-label">
-      <div class="color-preview" [style.background]="selectedPrimary"></div>
       <input type="color" [value]="selectedPrimary" (input)="onColorChange('primary', $event)"/>
     </label>
   </ion-item>
@@ -34,7 +33,6 @@
   <ion-item lines="full">
     <ion-label>Sekundärfarbe</ion-label>
     <label class="color-label">
-      <div class="color-preview" [style.background]="selectedSecondary"></div>
       <input type="color" [value]="selectedSecondary" (input)="onColorChange('secondary', $event)"/>
     </label>
   </ion-item>
