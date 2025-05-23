@@ -32,6 +32,7 @@ export class SettingsPage {
   selectedCount = Number(localStorage.getItem('release_years') || '3');
   selectedPrimary = localStorage.getItem('color-primary') || '#ffc815';
   selectedSecondary = localStorage.getItem('color-secondary') || '#0ce3ff';
+  selectedNavigationColor = localStorage.getItem('color-navigation') || '#0e0c0c';
   darkMode = localStorage.getItem('theme') === 'dark';
 
   constructor(private swUpdate: SwUpdate) {
@@ -41,14 +42,20 @@ export class SettingsPage {
     });
   }
 
-  setColor(variable: 'primary' | 'secondary' | 'background', color: string) {
-    const cssVar = variable === 'background' ? '--ion-background-color' : `--ion-color-${variable}`;
+  setColor(variable: 'primary' | 'secondary' | 'background' | 'navigation', color: string) {
+    const cssVar =
+      variable === 'background' ? '--ion-background-color' :
+        variable === 'navigation' ? '--color-navigation' :
+          `--ion-color-${variable}`;
+
     document.documentElement.style.setProperty(cssVar, color);
     localStorage.setItem(`color-${variable}`, color);
 
     if (variable === 'primary') this.selectedPrimary = color;
     if (variable === 'secondary') this.selectedSecondary = color;
+    if (variable === 'navigation') this.selectedNavigationColor = color;
   }
+
 
   checkForUpdate() {
     if (this.swUpdate.isEnabled) {
@@ -73,7 +80,7 @@ export class SettingsPage {
     localStorage.setItem('release_years', String(count));
   }
 
-  onColorChange(variable: 'primary' | 'secondary' | 'background', event: Event) {
+  onColorChange(variable: 'primary' | 'secondary' | 'background' | 'navigation', event: Event) {
     const input = event.target as HTMLInputElement;
     this.setColor(variable, input.value);
   }

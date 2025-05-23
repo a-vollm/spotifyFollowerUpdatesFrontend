@@ -12,7 +12,7 @@
     <ion-label>Release Jahr Anzeige</ion-label>
   </div>
   <ion-item lines="full">
-    <ion-label>Anazahl</ion-label>
+    <ion-label>Anzahl</ion-label>
     <ion-select interface="interface" slot="end" [value]="selectedCount"
                 (ionChange)="onChangeCount($event.detail.value)">
       @for (val of yearOptions; track $index) {
@@ -36,7 +36,12 @@
       <input type="color" [value]="selectedSecondary" (input)="onColorChange('secondary', $event)"/>
     </label>
   </ion-item>
-
+  <ion-item lines="full">
+    <ion-label>Navigationsschrift</ion-label>
+    <label class="color-label">
+      <input type="color" [value]="selectedNavigationColor" (input)="onColorChange('navigation', $event)"/>
+    </label>
+  </ion-item>
   <ion-item lines="full">
     <ion-label>Dark Mode</ion-label>
     <ion-toggle slot="end" [checked]="darkMode" (ionChange)="toggleDarkMode($event.detail.checked)"></ion-toggle>
