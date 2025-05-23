@@ -25,16 +25,18 @@
   </div>
   <ion-item lines="full">
     <ion-label>Primärfarbe</ion-label>
-    <div class="color-preview" [style.background]="selectedPrimary" (click)="primaryPicker.click()"></div>
-    <input #primaryPicker type="color" class="hidden-color" [value]="selectedPrimary"
-           (input)="onColorChange('primary', $event)"/>
+    <label class="color-label">
+      <div class="color-preview" [style.background]="selectedPrimary"></div>
+      <input type="color" [value]="selectedPrimary" (input)="onColorChange('primary', $event)"/>
+    </label>
   </ion-item>
 
   <ion-item lines="full">
     <ion-label>Sekundärfarbe</ion-label>
-    <div class="color-preview" [style.background]="selectedSecondary" (click)="secondaryPicker.click()"></div>
-    <input #secondaryPicker type="color" class="hidden-color" [value]="selectedSecondary"
-           (input)="onColorChange('secondary', $event)"/>
+    <label class="color-label">
+      <div class="color-preview" [style.background]="selectedSecondary"></div>
+      <input type="color" [value]="selectedSecondary" (input)="onColorChange('secondary', $event)"/>
+    </label>
   </ion-item>
 
   <ion-item lines="full">
