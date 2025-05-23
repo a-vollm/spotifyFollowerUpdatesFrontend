@@ -2,14 +2,13 @@
   display: block;
   width: 100%;
 
-  ion-label,
-  ion-icon {
+  ion-label, ion-icon {
     color: var(--color-navigation);
   }
 
   ion-tab-bar {
     position: absolute;
-    bottom: env(safe-area-inset-bottom, 0);
+    bottom: 0;
     width: 100%;
     height: 3rem;
     background: var(--ion-color-primary) !important;
